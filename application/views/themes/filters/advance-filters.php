@@ -10,6 +10,7 @@
    <div class="row">
     <div class="col-12 form-group">
       <select name="ad_type" class="form-control">
+        <option value="">aqui estoy</option>
         <option value="">Menor precio</option>
         <option value="">Mayor precio</option>
         <option value="">Mas antiguos</option>
@@ -30,7 +31,7 @@
       <select class="filter-country form-control" name="country" >
         <option value="">País</option>
         <?php foreach($countries as $country):?>
-          <option value="<?= $country['id']?>"><?= $country['name']?></option>
+          <option value="<?= $country['id']?>" <?=$country['id']==7?"selected":"";?>><?= $country['name']?></option>
         <?php endforeach; ?>       
       </select>
     </div>
@@ -54,6 +55,7 @@
   </div>
 
 </div>
+llegue 
 
 <!-- Category & sub Category & fields-->
 <div class="single-slidebar">
@@ -66,6 +68,7 @@
         $rows = get_records_where('ci_categories',$where);
         $options = array('' => trans('all_categories')) + array_column($rows,'name','id');
         echo form_dropdown('category',$options,'','class="filter-category form-control"');
+
       ?>
     </div>
   </div>
