@@ -2,6 +2,7 @@
 <?php 
   $attributes = array('method' => 'get','class' => 'filterForm filter-form'); 
   echo form_open(base_url('ads'),$attributes);
+
 ?>
 
 <!-- Type -->
@@ -9,12 +10,12 @@
   <h4>Ordenar por</h4>
    <div class="row">
     <div class="col-12 form-group">
-      <select name="ad_type" class="form-control">
-        <option value="">aqui estoy</option>
-        <option value="">Menor precio</option>
-        <option value="">Mayor precio</option>
-        <option value="">Mas antiguos</option>
-        <option value="0">Mas recientes</option>
+      <select name="ad_type" class="form-control filter-ad_type">
+         <option value="" selected="">Seleccione</option>
+        <option value="MNP">Menor precio</option>
+        <option value="MYP">Mayor precio</option>
+        <option value="MA">Mas antiguos</option>
+        <option value="RT">Mas recientes</option>
         <option value="1">Destacados</option>
         <option value="2">Hot</option>
       </select>
@@ -28,10 +29,10 @@
 
   <div class="row">
     <div class="col-12 form-group">
-      <select class="filter-country form-control" name="country" >
+      <select class="filter-country form-control" name="country">
         <option value="">País</option>
         <?php foreach($countries as $country):?>
-          <option value="<?= $country['id']?>" <?=$country['id']==7?"selected":"";?>><?= $country['name']?></option>
+          <option value="<?= $country['id']?>" <?=$country['id']==7?"selected":"";?> ><?= $country['name']?></option>
         <?php endforeach; ?>       
       </select>
     </div>
@@ -55,19 +56,21 @@
   </div>
 
 </div>
-llegue 
+
 
 <!-- Category & sub Category & fields-->
 <div class="single-slidebar">
-  <h4>Categoria</h4>
+  <h4>Categoria </h4>
   <!--  -->
+
   <div class="row">
     <div class="col-12 form-group">
       <?php
         $where = array('status' => 1);
         $rows = get_records_where('ci_categories',$where);
         $options = array('' => trans('all_categories')) + array_column($rows,'name','id');
-        echo form_dropdown('category',$options,'','class="filter-category form-control"');
+        $category=(isset($_GET['category'])) ? $_GET['category'] : '';
+        echo form_dropdown('category',$options,$category,'class="filter-category form-control"');
 
       ?>
     </div>

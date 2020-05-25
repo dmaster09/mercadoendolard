@@ -4,6 +4,26 @@
     var base_url = '<?php echo base_url(); ?>';
     var csfr_token_name = '<?php echo $this->security->get_csrf_token_name(); ?>';
     var csfr_token_value = '<?php echo $this->security->get_csrf_hash(); ?>';
+
+    //for default 
+   $( document ).ready(function() {
+     //preLoardState();
+     $('.filter-country').change();
+     $('.filter-state').change();
+     $('.filter-city').change();
+     $('.filter-ad_type').val("<?= (isset($_GET['ad_type'])) ? $_GET['ad_type'] : '' ?>")
+     <?php
+     if(isset($_GET['subcategory'])){?>
+       $('.filter-category').change();
+     
+     <?php
+        }
+     ?>      
+       setTimeout('atributionsLoad()',1000);    
+
+
+   
+    });
     //-------------------------------------------------------------------
     // Get sub category of category
     $(document).on('change','.category',function() {
@@ -393,6 +413,8 @@
   //-------------------------------------------------------------------
   // Get sub category of category
   $(document).on('change','.filter-category',function() {
+
+
     $('.pre-loader').removeClass('hidden');
     category = this.value;
     if(category == '')
@@ -420,13 +442,20 @@
           {
             $('.filter-custom-field-wrapper').addClass('hidden');
             $('.filter-subcategory-wrapper').html(obj.msg);
+
             $('.filter-subcategory-wrapper').removeClass('hidden');
+            $('.filter-subcategory').val("<?= (isset($_GET['subcategory'])) ? $_GET['subcategory'] : '' ?>");
+            $('.filter-subcategory').change();
+            
           }
           if(obj.status == 'fields')
           {
             $('.filter-subcategory-wrapper').addClass('hidden');
             $('.filter-custom-field-wrapper').html(obj.msg);
             $('.filter-custom-field-wrapper').removeClass('hidden');
+            $('.filter-subcategory').val("<?= (isset($_GET['subcategory'])) ? $_GET['subcategory'] : '' ?>");
+              $('.filter-subcategory').change();
+             
           }
         },
       });
@@ -436,6 +465,7 @@
   // Get custom fields of subcategory
   $(document).on('change','.filter-subcategory',function() {
    subcategory = this.value;
+
    $('.pre-loader').removeClass('hidden');
    if(subcategory == '')
    {
@@ -493,9 +523,36 @@
       success: function(obj) {
         $('.pre-loader').addClass('hidden');
         $('.filter-state-wrapper').html(obj.msg);
+        $('.filter-state').val("<?= (isset($_GET['state'])) ? $_GET['state'] : '' ?>");
+        $('.filter-state').change();
+      
+
       },
     });
   });
+
+  function preLoardState(){
+    
+    var cdgpa=$('.filter-country').val();
+    alert(cdgpa);
+    $('.pre-loader').removeClass('hidden');
+    var data =  {
+      country : cdgpa,
+    }
+    data[csfr_token_name] = csfr_token_value;
+    $.ajax({
+      type: "POST",
+      url: "<?= base_url('ads/get_country_states') ?>",
+      data: data,
+      dataType: "json",
+      success: function(obj) {
+        $('.pre-loader').addClass('hidden');
+        $('.filter-state-wrapper').html(obj.msg);
+      },
+    });
+}
+  
+
   
   $(document).on('change','.filter-state',function()
   {
@@ -512,6 +569,8 @@
       success: function(obj) {  
         $('.pre-loader').addClass('hidden');
         $('.filter-city-wrapper').html(obj.msg);
+        $('.filter-city').val("<?= (isset($_GET['city'])) ? $_GET['city'] : '' ?>");
+       
       },
     });
   });
@@ -519,15 +578,57 @@
     range: true,
     min: 0,
     max: 10000,
-    values: [ 0, 10000 ],
+    values: [ "<?= (isset($_GET['price-min'])) ? $_GET['price-min'] : '0' ?>", "<?= (isset($_GET['price-max'])) ? $_GET['price-max'] : '10000' ?>"],
     slide: function( event, ui ) {
-      $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+      slmin=ui.values[ 0 ];
+      slmax=ui.values[ 1 ];
+    
+
+      $( "#amount" ).val( "$" + slmin.toFixed(2) + " - $" + slmax.toFixed(2));
       $('input[name=price-min]').val(ui.values[ 0 ]);
       $('input[name=price-max]').val(ui.values[ 1 ]);
     }
   });
 
-  $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
-    " - $" + $( "#slider-range" ).slider( "values", 1 ) );
+  $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ).toFixed(2) +
+    " - $" + $( "#slider-range" ).slider( "values", 1 ).toFixed(2) );
+
+  function atributionsLoad(){
+  var url =getUrlVars("<?=$_SERVER["REQUEST_URI"];?>");
+  var i=0
+  $.each(url, function( key, value ) {
+     
+      var variable=$('#'+key).val();
+      i=i+1;
+      //if(i<=10){
+      $('#'+key).val(value);
+      
+      //}
+      
+   
+      
+   });
+  }
+
+
+  function getUrlVars(url) {
+    var hash;
+    var myJson = {};
+    var hashes = url.slice(url.indexOf('?') + 1).split('&');
+    for (var i = 0; i < hashes.length; i++) {
+        hash = hashes[i].split('=');
+        myJson[hash[0]] = hash[1];
+        // If you want to get in native datatypes
+        // myJson[hash[0]] = JSON.parse(hash[1]); 
+    }
+    return myJson;
+}
+
+function stopLoad() {
+  clearInterval(id);
+  console.log("log");
+}
+
+
 
 </script>

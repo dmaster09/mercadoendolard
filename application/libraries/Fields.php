@@ -1206,11 +1206,11 @@
 
 				$options = $this->field_options($data['id']);
 
-					$options = array('' => 'Select '.$data['name']) + array_column($options, 'name','id');
+					$options = array('' => $data['name']) + array_column($options, 'name','id');
 
 
 
-					return form_dropdown($field_name,$options,$data['default_value'],'class="form-control"');
+					return form_dropdown($field_name,$options,$data['default_value'],'class="'.$field_name.' form-control" id="'.$field_name.'"');
 
 			}
 

@@ -123,6 +123,7 @@ class Ad_Model extends CI_Model{
 				$this->db->where('ci_ads.city',$filters['city']);
 
 			if(isset($filters['ad_type']))
+
 				$this->db->where('ci_ads.is_featured',$filters['ad_type']);
 
 			if(isset($filters['title']))
@@ -139,6 +140,32 @@ class Ad_Model extends CI_Model{
 				}
 				$this->db->group_end();
 			}
+
+
+			if(isset($filters['ad_type'])){
+		        if($filters['ad_type']=="MNP"){
+		     	   $campo="ci_ads.price";
+		     	   $parameters='ASC';
+		        }elseif($filters['ad_type']=="MYP"){
+		            $campo="ci_ads.price";
+		     	    $parameters='DESC';
+		        }elseif($filters['ad_type']=="MA"){
+		        	$campo="ci_ads.created_date";
+		     	    $parameters='ASC';
+		        }elseif($filters['ad_type']=="RT"){
+		        	$campo="ci_ads.created_date";
+		     	    $parameters='DESC';
+		        }else{
+		          $campo="ci_ads.is_featured";
+		     	  $parameters='desc';
+		        }
+			
+     	     }else{
+     		      $campo="ci_ads.is_featured";
+		     	  $parameters='desc';
+     	        //  $this->db->order_by('ci_ads.is_featured','desc');
+     	     } 
+		
 			
 			unset($filters['ad_type']);
 			unset($filters['category']);
@@ -178,8 +205,8 @@ class Ad_Model extends CI_Model{
 
 		$this->db->where('ci_ads.is_status', 1);
 
-		$this->db->order_by('ci_ads.is_featured','desc');
-
+		$this->db->order_by($campo,$parameters);
+		 
 		$this->db->group_by('slug');
 
 		$this->db->limit($limit, $offset);
