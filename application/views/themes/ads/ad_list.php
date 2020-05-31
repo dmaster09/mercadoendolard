@@ -12,11 +12,11 @@
 
         <h1 class="text-white">
 
-          Listado de Anuncios
+          Listado de Anuncios 
 
         </h1>   
 
-        <p class="text-white"><?= count($ads) ?> Anúncios Encontrados</p>
+        <p class="text-white"> <?= $registros; ?> Anúncios Encontrados</p>
 
       </div>                      
 

@@ -8,13 +8,15 @@
     //for default 
    $( document ).ready(function() {
      //preLoardState();
-     $('.filter-country').change();
-     $('.filter-state').change();
-     $('.filter-city').change();
+     //$('.filter-country').change();
+     country();
+    
+   //  $('.filter-state').change();
+     //$('.filter-city').change();
      $('.filter-ad_type').val("<?= (isset($_GET['ad_type'])) ? $_GET['ad_type'] : '' ?>")
      <?php
      if(isset($_GET['subcategory'])){?>
-       $('.filter-category').change();
+       //$('.filter-category').change();
      
      <?php
         }
@@ -24,10 +26,13 @@
 
    
     });
+   category();
+ 
     //-------------------------------------------------------------------
     // Get sub category of category
     $(document).on('change','.category',function() {
      category = this.value;
+
      $('.pre-loader').removeClass('hidden');
      if(category == '')
      {
@@ -71,7 +76,7 @@
   // Get custom fields of subcategory
   $(document).on('change','.select-subcategory',function() {
     $('.pre-loader').removeClass('hidden');
-    subcategory = this.value;
+      subcategory = this.value;
     if(subcategory == '')
     {
       $('.custom-field-wrapper').addClass('hidden');
@@ -414,7 +419,6 @@
   // Get sub category of category
   $(document).on('change','.filter-category',function() {
 
-
     $('.pre-loader').removeClass('hidden');
     category = this.value;
     if(category == '')
@@ -445,7 +449,7 @@
 
             $('.filter-subcategory-wrapper').removeClass('hidden');
             $('.filter-subcategory').val("<?= (isset($_GET['subcategory'])) ? $_GET['subcategory'] : '' ?>");
-            $('.filter-subcategory').change();
+            subcategory();
             
           }
           if(obj.status == 'fields')
@@ -454,7 +458,7 @@
             $('.filter-custom-field-wrapper').html(obj.msg);
             $('.filter-custom-field-wrapper').removeClass('hidden');
             $('.filter-subcategory').val("<?= (isset($_GET['subcategory'])) ? $_GET['subcategory'] : '' ?>");
-              $('.filter-subcategory').change();
+             subcategory();
              
           }
         },
@@ -490,11 +494,13 @@
         {
           $('.filter-custom-field-wrapper').html(obj.msg);
           $('.filter-custom-field-wrapper').removeClass('hidden');
+          envioFrom();
         }
         if(obj.status == 'error')
         {
           $('.filter-custom-field-wrapper').html('');
           $('.filter-custom-field-wrapper').addClass('hidden');
+          envioFrom();
         }
       },
       
@@ -574,11 +580,15 @@
       },
     });
   });
+ 
+    var maximo ="<?=(isset($max_val_price))?$max_val_price:'10000';?>";
+
   $( "#slider-range" ).slider({
     range: true,
     min: 0,
-    max: 10000,
-    values: [ "<?= (isset($_GET['price-min'])) ? $_GET['price-min'] : '0' ?>", "<?= (isset($_GET['price-max'])) ? $_GET['price-max'] : '10000' ?>"],
+    max: parseInt(maximo),
+    step:50,
+    values: [ "<?= (isset($_GET['price-min'])) ? $_GET['price-min'] : 0; ?>", "<?= (isset($_GET['price-max'])) ? $_GET['price-max'] :$max_val_price ?>"],
     slide: function( event, ui ) {
       slmin=ui.values[ 0 ];
       slmax=ui.values[ 1 ];
@@ -624,11 +634,201 @@
     return myJson;
 }
 
+  function country()
+  {
+
+     var id_country=$('.filter-country').val();
+     //alert(id_country);
+    
+    if(id_country == '')
+    {
+      $('.filter-city').html('<option value="">Select City</option>');
+      return false;
+    }
+    $('.pre-loader').removeClass('hidden');
+    var data =  {
+      country : id_country,
+    }
+    data[csfr_token_name] = csfr_token_value;
+    $.ajax({
+      type: "POST",
+      url: "<?= base_url('ads/get_country_states') ?>",
+      data: data,
+      dataType: "json",
+      success: function(obj) {
+        $('.pre-loader').addClass('hidden');
+        $('.filter-state-wrapper').html(obj.msg);
+        $('.filter-state').val("<?= (isset($_GET['state'])) ? $_GET['state'] : '' ?>");
+        
+          state();
+      },
+    });
+  }
+
+
+
+ function state(){
+    $('.pre-loader').removeClass('hidden');
+    var state=$('.filter-state').val();
+
+    var data =  {
+      state : state,
+    }
+    data[csfr_token_name] = csfr_token_value;
+    $.ajax({
+      type: "POST",
+      url: "<?= base_url('ads/get_state_cities') ?>",
+      data: data,
+      dataType: "json",
+      success: function(obj) {  
+        $('.pre-loader').addClass('hidden');
+        $('.filter-city-wrapper').html(obj.msg);
+        $('.filter-city').val("<?= (isset($_GET['city'])) ? $_GET['city'] : '' ?>");
+       
+      },
+    });
+  }
+
+function category(value_c){
+   category = $('.category_filter_pro').val();
+    $('.pre-loader').removeClass('hidden');
+
+    if(category == '')
+    {
+      $('.filter-subcategory').html('');
+      $('.filter-subcategory-wrapper').addClass('hidden');
+      $('.filter-custom-field-wrapper').html('');
+      $('.filter-custom-field-wrapper').addClass('hidden');
+      $('.pre-loader').addClass('hidden');
+    }
+    else
+    {
+      var data =  {
+        parent : category,
+      }
+      data[csfr_token_name] = csfr_token_value;
+      $.ajax({
+        type: "POST",
+        url: "<?= base_url('ads/get_subcategory_for_filter') ?>",
+        data: data,
+        dataType: "json",
+        success: function(obj) {
+          $('.pre-loader').addClass('hidden');
+          if(obj.status == 'success')
+          {
+            $('.filter-custom-field-wrapper').addClass('hidden');
+            $('.filter-subcategory-wrapper').html(obj.msg);
+
+            $('.filter-subcategory-wrapper').removeClass('hidden');
+            $('.filter-subcategory').val("<?= (isset($_GET['subcategory'])) ? $_GET['subcategory'] : '' ?>");
+             subcategory();
+            
+            
+          }
+          if(obj.status == 'fields')
+          {
+            $('.filter-subcategory-wrapper').addClass('hidden');
+            $('.filter-custom-field-wrapper').html(obj.msg);
+            $('.filter-custom-field-wrapper').removeClass('hidden');
+            $('.filter-subcategory').val("<?= (isset($_GET['subcategory'])) ? $_GET['subcategory'] : '' ?>");
+            subcategory();
+
+             
+          }
+        },
+      });
+    }
+  }
+  
+  function subcategory(){
+     subcategory = $('.filter-subcategory').val();
+
+   $('.pre-loader').removeClass('hidden');
+   if(subcategory == '')
+   {
+    $('.filter-custom-field-wrapper').addClass('hidden');
+    $('.pre-loader').addClass('hidden');
+  }
+  else
+  {
+    var data =  {
+      parent : subcategory,
+    }
+    data[csfr_token_name] = csfr_token_value;
+    $.ajax({
+      type: "POST",
+      url: "<?= base_url('ads/get_subcategory_custom_fields_for_filter') ?>",
+      data: data,
+      dataType: "json",
+      success: function(obj) {
+        $('.pre-loader').addClass('hidden');
+        
+        if(obj.status == 'success')
+        {
+          $('.filter-custom-field-wrapper').html(obj.msg);
+          $('.filter-custom-field-wrapper').removeClass('hidden');
+        }
+        if(obj.status == 'error')
+        {
+          $('.filter-custom-field-wrapper').html('');
+          $('.filter-custom-field-wrapper').addClass('hidden');
+        }
+      },
+      
+    });
+  }
+  }
+
+
 function stopLoad() {
   clearInterval(id);
   console.log("log");
 }
 
+  
+  $(document).on('change','.filter-country',function()
+  {
+    envioFrom();
+  });
 
 
+  $(document).on('change','.filter-state ',function()
+  {
+    envioFrom();
+  });
+
+   $(document).on('change','.filter-city',function()
+  {
+    envioFrom();
+  });
+
+
+     $(document).on('change','.filter-category',function()
+  {
+    $('.filter-subcategory').val("");
+    envioFrom();
+  });
+
+
+     $(document).on('change','.filters-att',function()
+  {
+     envioFrom();
+  });
+
+   
+ 
+
+
+
+ function envioFrom(){
+   var myForm = $('form.filterForm');
+    var allInputs = $('.filterForm :input');
+    var input, i;
+    for(i = 0; input = allInputs[i]; i++) {
+      if(input.getAttribute('name') && !input.value) {
+        input.setAttribute('name', '');
+      }
+    }
+    myForm.submit();
+ }
 </script>

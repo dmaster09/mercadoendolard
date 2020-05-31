@@ -31,7 +31,9 @@ class Ad_Model extends CI_Model{
 				$this->db->where('ci_ads.city',$filters['city']);
 
 			if(isset($filters['ad_type']))
+				if($filters['ad_type']==1 || $filters['ad_type']==2){
 				$this->db->where('ci_ads.is_featured',$filters['ad_type']);
+			   }
 
 			if(isset($filters['title']))
 				$this->db->like('ci_ads.title',$filters['title']);
@@ -123,8 +125,12 @@ class Ad_Model extends CI_Model{
 				$this->db->where('ci_ads.city',$filters['city']);
 
 			if(isset($filters['ad_type']))
+				 if($filters['ad_type']==1 || $filters['ad_type']==2){
 
-				$this->db->where('ci_ads.is_featured',$filters['ad_type']);
+				
+				 	$this->db->where('ci_ads.is_featured',$filters['ad_type']);
+				 }
+				 
 
 			if(isset($filters['title']))
 				$this->db->like('ci_ads.title',$filters['title']);
@@ -163,7 +169,7 @@ class Ad_Model extends CI_Model{
      	     }else{
      		      $campo="ci_ads.is_featured";
 		     	  $parameters='desc';
-     	        //  $this->db->order_by('ci_ads.is_featured','desc');
+     	        $this->db->order_by('ci_ads.is_featured','desc');
      	     } 
 		
 			
@@ -212,9 +218,21 @@ class Ad_Model extends CI_Model{
 		$this->db->limit($limit, $offset);
 
 		$query = $this->db->get();
-
+        //$this->db->last_query();
 		return $query->result_array();
 
+	}
+
+	public function get_select_max_price(){
+		$this->db->select_max('price');
+		$this->db->join('ci_ad_detail','ci_ad_detail.ad_id = ci_ads.id','left');
+
+		$this->db->join('ci_categories','ci_categories.id = ci_ads.category');
+
+		$this->db->join('ci_subcategories','ci_subcategories.id = ci_ads.subcategory','left');		
+		$this->db->where('ci_ads.is_status', 1);
+        $query = $this->db->get('ci_ads');
+		return $this->db->get('ci_ads')->row_array();
 	}
 
 

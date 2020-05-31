@@ -10,7 +10,7 @@
   <h4>Ordenar por</h4>
    <div class="row">
     <div class="col-12 form-group">
-      <select name="ad_type" class="form-control filter-ad_type">
+      <select name="ad_type" class="form-control filter-ad_type" onchange="envioFrom()">
          <option value="" selected="">Seleccione</option>
         <option value="MNP">Menor precio</option>
         <option value="MYP">Mayor precio</option>
@@ -29,7 +29,7 @@
 
   <div class="row">
     <div class="col-12 form-group">
-      <select class="filter-country form-control" name="country">
+      <select class="filter-country form-control" name="country" onchange="envioFrom()">
         <option value="">País</option>
         <?php foreach($countries as $country):?>
           <option value="<?= $country['id']?>" <?=$country['id']==7?"selected":"";?> ><?= $country['name']?></option>
@@ -41,7 +41,7 @@
 
   <div class="row">
     <div class="col-12 form-group filter-state-wrapper">
-      <select class="filter-state form-control" name="Estado">
+      <select class="filter-state form-control" name="Estado" >
         <option value="">Estado</option>
       </select>
     </div>
@@ -65,14 +65,21 @@
 
   <div class="row">
     <div class="col-12 form-group">
+
       <?php
         $where = array('status' => 1);
         $rows = get_records_where('ci_categories',$where);
         $options = array('' => trans('all_categories')) + array_column($rows,'name','id');
-        $category=(isset($_GET['category'])) ? $_GET['category'] : '';
+        if(isset($category_id)){
+           $category=$category_id; //cuando viene de categoria propia
+        }else{
+           $category=(isset($_GET['category'])) ? $_GET['category'] : '';//busqueda
+        }
         echo form_dropdown('category',$options,$category,'class="filter-category form-control"');
 
       ?>
+
+      <input type="hidden" class="category_filter_pro" value="<?=$category;?>">
     </div>
   </div>
 

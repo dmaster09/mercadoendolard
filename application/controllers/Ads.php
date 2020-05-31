@@ -19,7 +19,8 @@ class Ads extends Main_Controller {
 	{	
 		if(!$title || is_numeric($title))
 		{
-
+			
+			
 			$count = $this->ad_model->count_all_ads();
 			$offset = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
 			$url = base_url("ads/");
@@ -31,9 +32,14 @@ class Ads extends Main_Controller {
 			$data['ads'] = $this->ad_model->get_all_ads($this->per_page_record, $offset, null); // Get all posts
 			$data['countries'] = $this->common_model->get_countries_list(); 
 			$data['categories'] = $this->common_model->get_categories_list(); 
+			$data['registros']=$this->ad_model->count_all_ads();
+			$max__price=$this->ad_model->get_select_max_price();
+			$data['max_val_price']=$max__price['price'];
+
 
 			$data['title'] = 'Listado';
 			$data['layout'] = 'themes/ads/ad_list';
+			
 
 			$this->load->view('themes/layout', $data);
 		}

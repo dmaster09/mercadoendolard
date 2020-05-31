@@ -1210,7 +1210,7 @@
 
 
 
-					return form_dropdown($field_name,$options,$data['default_value'],'class="'.$field_name.' form-control" id="'.$field_name.'"');
+					return form_dropdown($field_name,$options,$data['default_value'],'class="'.$field_name.' filters-att form-control" id="'.$field_name.'"');
 
 			}
 
