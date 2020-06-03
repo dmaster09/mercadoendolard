@@ -570,12 +570,16 @@
     
     var maximo ="<?=(isset($max_val_price))?$max_val_price:'10000';?>";
 
+<?php
+
+if(isset($max_val_price)):
+?>
   $( "#slider-range" ).slider({
     range: true,
     min: 0,
     max: parseInt(maximo),
     step:50,
-    values: [ "<?= (isset($_GET['price-min'])) ? $_GET['price-min'] : 0; ?>", "<?= (isset($_GET['price-max'])) ? $_GET['price-max'] :(isset($max_val_price))?$max_val_price:'10000' ?>"],
+    values: [ "<?= (isset($_GET['price-min'])) ? $_GET['price-min'] : 0; ?>", "<?= (isset($_GET['price-max'])) ? $_GET['price-max'] :$max_val_price ?>"],
     slide: function( event, ui ) {
       slmin=ui.values[ 0 ];
       slmax=ui.values[ 1 ];
@@ -590,6 +594,9 @@
   $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ).toFixed(2) +
     " - $" + $( "#slider-range" ).slider( "values", 1 ).toFixed(2) );
 
+<?php
+endif;
+?>
   function atributionsLoad(){
   var url =getUrlVars("<?=$_SERVER["REQUEST_URI"];?>");
   var i=0

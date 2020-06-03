@@ -51,9 +51,11 @@ class Category extends Main_Controller{
 
 			if(!$att){
 				unset($data['ads'][$key]);
-				$data['registros']=$data['registros']-1;//
+				$data['registros']=$data['registros']-1;
 			}
 		   }	
+
+		   
 			
 			$max__price=$this->ad_model->get_select_max_price();
 			

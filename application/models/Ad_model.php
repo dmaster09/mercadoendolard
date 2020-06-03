@@ -260,12 +260,132 @@ class Ad_Model extends CI_Model{
 	}
 
 	public function get_select_max_price(){
+
+		$filters = $_GET;
+			
+			if(isset($filters['category']) && !empty($filters['category']))
+				$this->db->where('ci_ads.category',$filters['category']);
+
+			if(isset($filters['subcategory']) && !empty($filters['subcategory']))
+				$this->db->where('ci_ads.subcategory',$filters['subcategory']);
+
+			if(isset($filters['price-min']) && !empty($filters['price-min']))
+				$this->db->where('ci_ads.price >=',$filters['price-min']);
+
+			if(isset($filters['price-max']) && !empty($filters['price-max']))
+				$this->db->where('ci_ads.price <=',$filters['price-max']);
+
+			if(isset($filters['country']))
+				$this->db->where('ci_ads.country',$filters['country']);
+
+			if(isset($filters['state']))
+				$this->db->where('ci_ads.state',$filters['state']);
+
+			if(isset($filters['city']))
+				$this->db->where('ci_ads.city',$filters['city']);
+
+			if(isset($filters['ad_type']))
+				 if($filters['ad_type']==1 || $filters['ad_type']==2){
+
+				
+				 	$this->db->where('ci_ads.is_featured',$filters['ad_type']);
+				 }
+				 
+
+			if(isset($filters['title']))
+				$this->db->like('ci_ads.title',$filters['title']);
+
+			if(isset($filters['q']))
+			{
+				$search_text = explode(' ', $filters['q']);
+				$this->db->group_start();
+				foreach($search_text as $search){
+					$this->db->or_like('ci_ads.description', $search);
+					$this->db->or_like('ci_ads.title', $search);
+					$this->db->or_like('ci_ads.tags', $search);
+				}
+				$this->db->group_end();
+			}
+
+
+			if(isset($filters['ad_type'])){
+		        if($filters['ad_type']=="MNP"){
+		     	   $campo="ci_ads.price";
+		     	   $parameters='ASC';
+		        }elseif($filters['ad_type']=="MYP"){
+		            $campo="ci_ads.price";
+		     	    $parameters='DESC';
+		        }elseif($filters['ad_type']=="MA"){
+		        	$campo="ci_ads.created_date";
+		     	    $parameters='ASC';
+		        }elseif($filters['ad_type']=="RT"){
+		        	$campo="ci_ads.created_date";
+		     	    $parameters='DESC';
+		        }else{
+		          $campo="ci_ads.is_featured";
+		     	  $parameters='desc';
+		        }
+			
+     	     }else{
+     		      $campo="ci_ads.is_featured";
+		     	  $parameters='desc';
+     	        $this->db->order_by('ci_ads.is_featured','desc');
+     	     } 
+		
+			
+			unset($filters['ad_type']);
+			unset($filters['category']);
+			unset($filters['subcategory']);
+			unset($filters['price-max']);
+			unset($filters['price-min']);
+			unset($filters['q']);
+			unset($filters['country']);
+			unset($filters['state']);
+			unset($filters['city']);
+			unset($filters['title']);
+
+			$in_fiels_id= array();
+			$in_fiels_value=array();
+
+			foreach ($filters as $key => $value) {
+				$key = explode('-', $key)[1];
+
+				array_push($in_fiels_id,$key);
+				array_push($in_fiels_value,$value);
+
+				//  $this->db->where('ci_ad_detail.field_id',$key);
+				//  $this->db->where('ci_ad_detail.field_value',$value);
+				// // 
+				// // 
+			}
+			if(count($in_fiels_id)>0){
+				$id_fields=implode(",",$in_fiels_id);
+				$value_fiels=implode(',',$in_fiels_value);
+
+				 $this->db->where_in('ci_ad_detail.field_id',$in_fiels_id);
+				 $this->db->where_in('ci_ad_detail.field_value',$in_fiels_value);
+
+
+			}
+
+
+
 		$this->db->select_max('price','max');
+		// $this->db->join('ci_ad_detail','ci_ad_detail.ad_id = ci_ads.id','left');
+		// $this->db->join('ci_categories','ci_categories.id = ci_ads.category');
+		// $this->db->join('ci_subcategories','ci_subcategories.id = ci_ads.subcategory','left');		
+		// $this->db->where('ci_ads.is_status', 1);
+		
+		$this->db->from('ci_ads');
+
 		$this->db->join('ci_ad_detail','ci_ad_detail.ad_id = ci_ads.id','left');
+
 		$this->db->join('ci_categories','ci_categories.id = ci_ads.category');
-		$this->db->join('ci_subcategories','ci_subcategories.id = ci_ads.subcategory','left');		
+
+		$this->db->join('ci_subcategories','ci_subcategories.id = ci_ads.subcategory','left');
+
 		$this->db->where('ci_ads.is_status', 1);
-        $query = $this->db->get('ci_ads');
+        $query = $this->db->get();
         //return $this->db->last_query();
 		return $query->row()->max;
 

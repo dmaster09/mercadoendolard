@@ -46,6 +46,7 @@ class Ads extends Main_Controller {
 			$data['max_val_price']=$max__price+50;
 
 
+
 			$data['title'] = 'Listado';
 			$data['layout'] = 'themes/ads/ad_list';
 			

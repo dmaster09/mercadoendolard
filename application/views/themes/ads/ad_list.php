@@ -44,8 +44,13 @@
         <div class="row justify-content-center form-wrap no-gutters">
 
           <div class="col-lg-8 rounded-left">
+            <?php
+            $view=(isset($_GET['q'])) ? $_GET['q'] : '';
 
-            <input type="text" class="form-control rounded-left" name="title" placeholder="Buscar..." value="<?= (isset($_GET['title'])) ? $_GET['title'] : '' ?>">
+
+            ?>
+
+            <input type="text" class="form-control rounded-left" name="title" placeholder="Buscar..." value="<?= (isset($_GET['title'])) ? $_GET['title'] : $view ?>">
 
           </div>
 
