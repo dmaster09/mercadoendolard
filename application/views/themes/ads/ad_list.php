@@ -112,8 +112,8 @@
 
 
               $featured = get_featured_label($ad['is_featured']);
-
-
+            
+              
 
           ?>
 

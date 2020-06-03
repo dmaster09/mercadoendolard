@@ -555,6 +555,65 @@
         return $query->result_array();
     }
 
+     function atributess_ads_fields($id)
+    {       $afirma=true;
+           $ci = & get_instance();
+           $filters=$_GET;
+            unset($filters['ad_type']);
+            unset($filters['category']);
+            unset($filters['subcategory']);
+            unset($filters['price-max']);
+            unset($filters['price-min']);
+            unset($filters['q']);
+            unset($filters['country']);
+            unset($filters['state']);
+            unset($filters['city']);
+            unset($filters['title']);
+
+            $in_fiels_id= array();
+            $in_fiels_value=array();
+
+            foreach ($filters as $key => $value) {
+                $key = explode('-', $key)[1];
+
+                array_push($in_fiels_id,$key);
+                array_push($in_fiels_value,$value);
+             
+            }
+              $ci->db->select('ci_ad_detail.field_id,ci_ad_detail.field_value');
+              $ci->db->from('ci_ad_detail');
+
+
+            if(count($in_fiels_id)>0){
+                $id_fields=implode(",",$in_fiels_id);
+                $value_fiels=implode(',',$in_fiels_value);
+
+                 $ci->db->where_in('ci_ad_detail.field_id',$in_fiels_id);
+                 $ci->db->where_in('ci_ad_detail.field_value',$in_fiels_value);
+
+
+            }
+
+
+             $ci->db->where('ad_id',$id);
+             $query = $ci->db->get();
+             $array_view=$query->result_array();
+            
+             if(count($in_fiels_id)>0){
+                if(count($in_fiels_id)==count($array_view)){
+                $afirma=true;
+                }else{
+                $afirma= false;
+                }
+             }
+              return $afirma;
+
+
+
+
+
+    }
+
     // print post type
     function get_featured_label($is_featured)
     {

@@ -5,28 +5,15 @@
     var csfr_token_name = '<?php echo $this->security->get_csrf_token_name(); ?>';
     var csfr_token_value = '<?php echo $this->security->get_csrf_hash(); ?>';
 
-    //for default 
-   $( document ).ready(function() {
-     //preLoardState();
-     //$('.filter-country').change();
-     country();
     
-   //  $('.filter-state').change();
-     //$('.filter-city').change();
-     $('.filter-ad_type').val("<?= (isset($_GET['ad_type'])) ? $_GET['ad_type'] : '' ?>")
-     <?php
-     if(isset($_GET['subcategory'])){?>
-       //$('.filter-category').change();
-     
-     <?php
-        }
-     ?>      
-       setTimeout('atributionsLoad()',1000);    
-
-
+    $( document ).ready(function() {    
    
+      country();   
+     $('.filter-ad_type').val("<?= (isset($_GET['ad_type'])) ? $_GET['ad_type'] : '' ?>");
+  
+      setTimeout('atributionsLoad()',1000);    
     });
-   category();
+    category();
  
     //-------------------------------------------------------------------
     // Get sub category of category
@@ -580,7 +567,7 @@
       },
     });
   });
- 
+    
     var maximo ="<?=(isset($max_val_price))?$max_val_price:'10000';?>";
 
   $( "#slider-range" ).slider({
@@ -588,7 +575,7 @@
     min: 0,
     max: parseInt(maximo),
     step:50,
-    values: [ "<?= (isset($_GET['price-min'])) ? $_GET['price-min'] : 0; ?>", "<?= (isset($_GET['price-max'])) ? $_GET['price-max'] :$max_val_price ?>"],
+    values: [ "<?= (isset($_GET['price-min'])) ? $_GET['price-min'] : 0; ?>", "<?= (isset($_GET['price-max'])) ? $_GET['price-max'] :(isset($max_val_price))?$max_val_price:'10000' ?>"],
     slide: function( event, ui ) {
       slmin=ui.values[ 0 ];
       slmax=ui.values[ 1 ];

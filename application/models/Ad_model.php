@@ -61,10 +61,27 @@ class Ad_Model extends CI_Model{
 			unset($filters['city']);
 			unset($filters['title']);
 
+			$in_fiels_id= array();
+			$in_fiels_value=array();
+
 			foreach ($filters as $key => $value) {
 				$key = explode('-', $key)[1];
-				$this->db->where('ci_ad_detail.field_id',$key);
-				$this->db->where('ci_ad_detail.field_value',$value);
+				
+				array_push($in_fiels_id,$key);
+				array_push($in_fiels_value,$value);
+
+				//  $this->db->where('ci_ad_detail.field_id',$key);
+				//  $this->db->where('ci_ad_detail.field_value',$value);
+				// // 
+				// // 
+			}
+			if(count($in_fiels_id)>0){
+				$id_fields=implode(",",$in_fiels_id);
+				$value_fiels=implode(',',$in_fiels_value);
+
+				 $this->db->where_in('ci_ad_detail.field_id',$in_fiels_id);
+				 $this->db->where_in('ci_ad_detail.field_value',$in_fiels_value);
+
 			}
 
 		$this->db->select('
@@ -184,11 +201,30 @@ class Ad_Model extends CI_Model{
 			unset($filters['city']);
 			unset($filters['title']);
 
+			$in_fiels_id= array();
+			$in_fiels_value=array();
+
 			foreach ($filters as $key => $value) {
 				$key = explode('-', $key)[1];
-				$this->db->where('ci_ad_detail.field_id',$key);
-				$this->db->where('ci_ad_detail.field_value',$value);
+
+				array_push($in_fiels_id,$key);
+				array_push($in_fiels_value,$value);
+
+				//  $this->db->where('ci_ad_detail.field_id',$key);
+				//  $this->db->where('ci_ad_detail.field_value',$value);
+				// // 
+				// // 
 			}
+			if(count($in_fiels_id)>0){
+				$id_fields=implode(",",$in_fiels_id);
+				$value_fiels=implode(',',$in_fiels_value);
+
+				 $this->db->where_in('ci_ad_detail.field_id',$in_fiels_id);
+				 $this->db->where_in('ci_ad_detail.field_value',$in_fiels_value);
+
+
+			}
+
 
 		$this->db->select('
 			ci_ads.*,
@@ -218,21 +254,21 @@ class Ad_Model extends CI_Model{
 		$this->db->limit($limit, $offset);
 
 		$query = $this->db->get();
-        //$this->db->last_query();
+        // return $this->db->last_query();
 		return $query->result_array();
 
 	}
 
 	public function get_select_max_price(){
-		$this->db->select_max('price');
+		$this->db->select_max('price','max');
 		$this->db->join('ci_ad_detail','ci_ad_detail.ad_id = ci_ads.id','left');
-
 		$this->db->join('ci_categories','ci_categories.id = ci_ads.category');
-
 		$this->db->join('ci_subcategories','ci_subcategories.id = ci_ads.subcategory','left');		
 		$this->db->where('ci_ads.is_status', 1);
         $query = $this->db->get('ci_ads');
-		return $this->db->get('ci_ads')->row_array();
+        //return $this->db->last_query();
+		return $query->row()->max;
+
 	}
 
 

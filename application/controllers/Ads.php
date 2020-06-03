@@ -30,11 +30,20 @@ class Ads extends Main_Controller {
 			$this->pagination->initialize($config);
 
 			$data['ads'] = $this->ad_model->get_all_ads($this->per_page_record, $offset, null); // Get all posts
+
 			$data['countries'] = $this->common_model->get_countries_list(); 
 			$data['categories'] = $this->common_model->get_categories_list(); 
 			$data['registros']=$this->ad_model->count_all_ads();
-			$max__price=$this->ad_model->get_select_max_price();
-			$data['max_val_price']=$max__price['price'];
+			foreach ($data['ads'] as $key => $value) {
+			$att= atributess_ads_fields($value['id']);
+
+			if(!$att){
+				unset($data['ads'][$key]);
+				$data['registros']=$data['registros']-1;//
+			}
+		   }
+			$max__price=$this->ad_model->get_select_max_price();			
+			$data['max_val_price']=$max__price;
 
 
 			$data['title'] = 'Listado';

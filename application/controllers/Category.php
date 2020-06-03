@@ -43,10 +43,21 @@ class Category extends Main_Controller{
 			$data['countries'] = $this->common_model->get_countries_list(); 
 			$data['subcategories'] = $this->Category_m->get_subcatories_by_category($category);
 			$data['registros']=count($data['ads']);
-			$data['category_id']=$category_id;		
+			$data['category_id']=$category_id;	
+
+
+			foreach ($data['ads'] as $key => $value) {
+			$att= atributess_ads_fields($value['id']);
+
+			if(!$att){
+				unset($data['ads'][$key]);
+				$data['registros']=$data['registros']-1;//
+			}
+		   }	
 			
 			$max__price=$this->ad_model->get_select_max_price();
-			$data['max_val_price']=$max__price['price'];
+			
+			$data['max_val_price']=$max__price;
 
 
 			$data['title'] = get_category_by_slug($category); 
