@@ -43,7 +43,7 @@ class Ads extends Main_Controller {
 			}
 		   }
 			$max__price=$this->ad_model->get_select_max_price();			
-			$data['max_val_price']=$max__price;
+			$data['max_val_price']=$max__price+50;
 
 
 			$data['title'] = 'Listado';
