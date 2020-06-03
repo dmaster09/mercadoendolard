@@ -37,6 +37,7 @@ class Category extends Main_Controller{
 		{
 			
 			$category_id = get_category_id($category);
+
 			$data['fields'] = $this->Category_m->get_category_fields($category_id);
 
 			$data['ads'] = $this->Category_m->get_all_ads_by_category($category,$subcategory);
@@ -55,10 +56,9 @@ class Category extends Main_Controller{
 			}
 		   }	
 
-		   
+
 			
-			$max__price=$this->ad_model->get_select_max_price();
-			
+			$max__price=$this->ad_model->get_select_max_price($data['category_id']);			
 			$data['max_val_price']=$max__price+50;
 
 

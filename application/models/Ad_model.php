@@ -259,11 +259,17 @@ class Ad_Model extends CI_Model{
 
 	}
 
-	public function get_select_max_price(){
+	public function get_select_max_price($id_category=''){
 
 		$filters = $_GET;
-			
+
+		
+
+			 if(isset($id_category) && !empty($id_category))
+			  $this->db->where('ci_ads.category',$id_category);
+
 			if(isset($filters['category']) && !empty($filters['category']))
+
 				$this->db->where('ci_ads.category',$filters['category']);
 
 			if(isset($filters['subcategory']) && !empty($filters['subcategory']))
