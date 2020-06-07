@@ -100,7 +100,7 @@
                 <div align="center" id="imag_carousel">
                   <!-- Slide Background -->
                   
-                  <img  style="width: 100%;height: 500px;object-fit: cover;" src="<?= base_url($ad['img_'.$i]) ?>" alt="<?= $ad['title'] ?> photo" />
+                  <img  style="width: 100%;height: 500px;object-fit: contain;" src="<?= base_url($ad['img_'.$i]) ?>" alt="<?= $ad['title'] ?> photo" />
                   
                 </div>
               </div>
