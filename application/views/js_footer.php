@@ -825,4 +825,18 @@ function stopLoad() {
     }
     myForm.submit();
  }
+
+$(".gp_products_item").hover(function(){
+
+
+   $(this).find(".location-view").show();
+   $(this).find(".title-cto").hide();
+   $(this).find(".title-lgo").show();
+
+    }, function(){
+     $(this).find(".location-view").hide();
+     $(this).find(".title-cto").show();
+     $(this).find(".title-lgo").hide();
+    });
+
 </script>

@@ -101,10 +101,15 @@
                 </div>
                 <div class="gp_products_item_caption">
                   <ul class="gp_products_caption_name">
-                    <li><a href="<?= base_url('ad/'.$fpost['slug']) ?>"><?= $fpost['title'] ?></a></li>
+                    <li><a href="<?= base_url('ad/'.$fpost['slug']) ?>">
+                     
+                    <div class="title-cto"><?=truncate_title($fpost['title'],20);?></div> 
+                    <div class="title-lgo"><?=$fpost['title'];?></div> 
+                    
+                    </li>
                     <li><small><?= date_time($fpost['created_date']) ?></small><a href="<?= base_url('ad/'.$fpost['slug']) ?>" class="pull-right"><small><?= get_currency_symbol($this->general_settings['currency']); ?></small><?= number_format($fpost['price']) ?></a></li>
                   
-                    <li><small><?=($fpost['location']) ?></small></li>
+                    <li><small class="location-view"><?=($fpost['location']) ?></small></li>
 
                   </ul>
                   <li>
@@ -190,9 +195,17 @@
             </div>
             <div class="gp_products_item_caption">
               <ul class="gp_products_caption_name">
-                <li><a href="<?= base_url('ad/'.$post['slug']) ?>"><?= $post['title'] ?></a></li>
+                <li><a href="<?= base_url('ad/'.$post['slug']) ?>">
+                  
+                    <div class="title-cto"><?=truncate_title($post['title'],20);?></div> 
+                    <div class="title-lgo"><?=$post['title'];?></div> 
+                    
+
+                  </a>
+
+                </li>
                 <li><small><?= date_time($post['created_date']) ?></small><a href="<?= base_url('ad/'.$post['slug']) ?>" class="pull-right"><small><?= get_currency_symbol($this->general_settings['currency']) ?></small><?= number_format($post['price']) ?></a></li>
-                <li><small><?=($post['location']) ?></small></li>
+                <li><small class="location-view"><?=($post['location']) ?></small></li>
 
                
 

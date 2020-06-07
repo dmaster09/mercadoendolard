@@ -777,4 +777,13 @@
         else
             return false;
     }
+
+
+    function truncate_title($str, $width) {
+     if(strlen($str)>$width){
+    return strtok(wordwrap($str, $width, "...\n"), "\n");
+     }else{
+    return $str;
+  }
+}
 ?>

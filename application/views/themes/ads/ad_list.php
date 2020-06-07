@@ -28,8 +28,6 @@
 
 <!-- End banner Area -->  
 
-
-
 <!-- Start post Area -->
 
 <section class="post-area section-gap">
@@ -119,6 +117,8 @@
               $featured = get_featured_label($ad['is_featured']);
             
               
+              $cadena = $ad['title'];
+
 
           ?>
 
@@ -152,10 +152,13 @@
 
                 <ul class="gp_products_caption_name">
 
-                  <li><a href="<?= base_url('ad/'.$ad['slug']) ?>"><?= $ad['title'] ?></a></li>
-
+                  <li ><a href="<?= base_url('ad/'.$ad['slug']) ?>">
+                   <div class="title-cto"><?=truncate_title($ad['title'],20);?></div> 
+                    <div class="title-lgo"><?=$ad['title'];?></div> 
+                    </a></li>
+               
                   <li><small><?= date_time($ad['created_date']) ?></small><a href="<?= base_url('ad/'.$ad['slug']) ?>" class="pull-right"><small><?= get_currency_symbol($this->general_settings['currency']); ?></small><?= number_format($ad['price']) ?></a></li>
-                  <li><small><?=($ad['location']) ?></small></li>
+                  <li><small class="location-view"><?=($ad['location']) ?></small></li>
           
                
                 </ul>
@@ -263,4 +266,3 @@
 
 </section>
 
-<!-- End post Area

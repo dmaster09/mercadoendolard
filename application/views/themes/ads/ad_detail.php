@@ -97,10 +97,10 @@
               </div>
               <div class="carousel-item <?= ($i == '1') ? 'active' : '' ?>">
                 
-                <div align="center">
+                <div align="center" id="imag_carousel">
                   <!-- Slide Background -->
                   
-                  <img src="<?= base_url($ad['img_'.$i]) ?>" alt="<?= $ad['title'] ?> photo" width="100%" height="" />
+                  <img  style="width: 100%;height: 500px;object-fit: cover;" src="<?= base_url($ad['img_'.$i]) ?>" alt="<?= $ad['title'] ?> photo" />
                   
                 </div>
               </div>
@@ -119,7 +119,14 @@
               </div>
             </div> 
             <!-- End of Wrapper For Slides -->
-
+             <a class="carousel-control-prev" href="#row" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#row" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
 
 
           </div> <!-- End Slider -->

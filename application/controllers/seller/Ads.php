@@ -112,7 +112,7 @@ class Ads extends Main_Controller {
 				// thumbnail picture
 				if(!empty($_FILES['img_1']['name']))
 				{
-					$result = $this->functions->post_file_insert($path, 'img_1', '1000000');
+					$result = $this->functions->post_file_insert($path, 'img_1', '3000');
 					if($result['status'] == 1){
 						$data['img_1'] = $path.$result['msg'];
 					}
@@ -127,7 +127,7 @@ class Ads extends Main_Controller {
 				//  picture
 				if(!empty($_FILES['img_2']['name']))
 				{
-					$result = $this->functions->post_file_insert($path, 'img_2', '1000000');
+					$result = $this->functions->post_file_insert($path, 'img_2', '3000');
 					if($result['status'] == 1){
 						$data['img_2'] = $path.$result['msg'];
 					}
@@ -142,7 +142,7 @@ class Ads extends Main_Controller {
 				//  picture
 				if(!empty($_FILES['img_3']['name']))
 				{
-					$result = $this->functions->post_file_insert($path, 'img_3', '1000000');
+					$result = $this->functions->post_file_insert($path, 'img_3', '3000');
 					if($result['status'] == 1){
 						$data['img_3'] = $path.$result['msg'];
 					}
@@ -157,7 +157,7 @@ class Ads extends Main_Controller {
 				//  picture
 				if(!empty($_FILES['img_4']['name']))
 				{
-					$result = $this->functions->post_file_insert($path, 'img_4', '1000000');
+					$result = $this->functions->post_file_insert($path, 'img_4', '3000');
 					if($result['status'] == 1){
 						$data['img_4'] = $path.$result['msg'];
 					}
@@ -172,7 +172,7 @@ class Ads extends Main_Controller {
 				//  picture
 				if(!empty($_FILES['img_5']['name']))
 				{
-					$result = $this->functions->post_file_insert($path, 'img_5', '1000000');
+					$result = $this->functions->post_file_insert($path, 'img_5', '3000');
 					if($result['status'] == 1){
 						$data['img_5'] = $path.$result['msg'];
 					}
@@ -363,7 +363,7 @@ class Ads extends Main_Controller {
 				{
 					unlink($this->input->post('old_img_1'));
 					
-					$result = $this->functions->post_file_insert($path, 'img_1', '1000000');
+					$result = $this->functions->post_file_insert($path, 'img_1', '3000');
 					if($result['status'] == 1){
 						$data['img_1'] = $path.$result['msg'];
 					}
@@ -379,7 +379,7 @@ class Ads extends Main_Controller {
 					if(!empty($_POST['old_img_2']))
 					unlink($this->input->post('old_img_2'));
 					
-					$result = $this->functions->post_file_insert($path, 'img_2', '1000000');
+					$result = $this->functions->post_file_insert($path, 'img_2', '3000');
 					if($result['status'] == 1){
 						$data['img_2'] = $path.$result['msg'];
 					}
@@ -395,7 +395,7 @@ class Ads extends Main_Controller {
 					if(!empty($_POST['old_img_3']))
 					unlink($this->input->post('old_img_3'));
 					
-					$result = $this->functions->post_file_insert($path, 'img_3', '1000000');
+					$result = $this->functions->post_file_insert($path, 'img_3', '3000');
 					if($result['status'] == 1){
 						$data['img_3'] = $path.$result['msg'];
 					}
@@ -411,7 +411,7 @@ class Ads extends Main_Controller {
 					if(!empty($_POST['old_img_4']))
 					unlink($this->input->post('old_img_4'));
 					
-					$result = $this->functions->post_file_insert($path, 'img_4', '1000000');
+					$result = $this->functions->post_file_insert($path, 'img_4', '3000');
 					if($result['status'] == 1){
 						$data['img_4'] = $path.$result['msg'];
 					}
@@ -427,7 +427,7 @@ class Ads extends Main_Controller {
 					if(!empty($_POST['old_img_5']))
 					unlink($this->input->post('old_img_5'));
 					
-					$result = $this->functions->post_file_insert($path, 'img_5', '1000000');
+					$result = $this->functions->post_file_insert($path, 'img_5', '3000');
 					if($result['status'] == 1){
 						$data['img_5'] = $path.$result['msg'];
 					}
