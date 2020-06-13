@@ -631,6 +631,12 @@
         }
     }
 
+    function get_extrae_img_redimns($string){
+        $info = new SplFileInfo($string);
+        $ext=$info->getExtension();
+        $name=basename($info,".".$ext);
+        return 'assets/ads/thumbs/'.$name."_thumb.".$ext;
+    }
     // print ad status
     function get_ad_status($status)
     {
@@ -778,6 +784,24 @@
             return false;
     }
 
+     function locationItem($state,$city){
+     
+        $ci = & get_instance();
+        $ci->db->select('ci_cities.name as city,ci_states.name as state');
+        $ci->db->from('ci_cities');
+        $ci->db->join('ci_states','ci_cities.state_id = ci_states.id','left')
+        ->where('ci_cities.id',$city)
+        ->where('ci_cities.state_id',$state)        
+        ->limit(1);
+        $row = $ci->db->get();
+        $res=$row->row_array();
+
+        if($row->num_rows() > 0)        
+        return $res['city'].', '.$res['state'];
+
+        else
+            return '&nbsp';
+  }
 
     function truncate_title($str, $width) {
      if(strlen($str)>$width){
@@ -785,5 +809,7 @@
      }else{
     return $str;
   }
+
+ 
 }
 ?>

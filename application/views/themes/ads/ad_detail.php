@@ -44,7 +44,7 @@
 
           <!-- Slider -->
 
-          <div id="row" class="carousel slide thumb_btm_cntr thumb_scroll_x swipe_x ps_ease" data-ride="carousel" data-pause="hover" data-interval="60000" data-duration="1000">
+          <div id="row" class="carousel slide thumb_btm_cntr thumb_scroll_x swipe_x ps_ease" data-ride="carousel" data-pause="hover" data-interval="60000" data-pause="hover" data-duration="1000">
 
 
 
@@ -119,12 +119,13 @@
               </div>
             </div> 
             <!-- End of Wrapper For Slides -->
-             <a class="carousel-control-prev" href="#row" role="button" data-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <a class="carousel-control-prev gp_products_carousel_pp_control_left" href="#row" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="false"></span>
     <span class="sr-only">Previous</span>
   </a>
-  <a class="carousel-control-next" href="#row" role="button" data-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+
+  <a class="carousel-control-next gp_products_carousel_pp_control_right " href="#row" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="false"></span>
     <span class="sr-only">Next</span>
   </a>
 
@@ -416,7 +417,7 @@
 
     <div class="row d-flex justify-content-center">
 
-      <div id="adv_gp_products_3_columns_carousel" class="carousel slide gp_products_carousel_wrapper swipe_x ps_easeOutCirc" data-ride="carousel" data-duration="2000" data-interval="5000" data-pause="hover" data-column="<?= count($similar_ads) ?>" data-m576="1" data-m768="1" data-m992="<?= count($similar_ads) ?>" data-m1200="<?= count($similar_ads) ?>">
+      <div id="adv_gp_products_3_columns_carousel" class="carousel slide gp_products_carousel_wrapper " data-ride="carousel" data-duration="2000" data-interval="5000"  data-column="<?= count($similar_ads) ?>" data-m576="1" data-m768="1" data-m992="<?= count($similar_ads) ?>" data-m1200="<?= count($similar_ads) ?>">
 
         <!--========= Wrapper for slides =========-->
 
@@ -429,7 +430,7 @@
             $counter = 1;
 
             foreach ($similar_ads as $ad):
-
+                 $location_items=locationItem($ad['state'],$ad['city']);
           ?>
 
           <!--========= 1st slide =========-->
@@ -455,12 +456,19 @@
                
                 <div class="gp_products_item_caption">
 
-                  <ul class="gp_products_caption_name">
+                  <ul class="gp_products_caption_name" >
 
-                    <li><a href="<?= base_url('ad/'.$ad['slug']) ?>"><?= $ad['title'] ?></a></li>
+                    <li><a href="<?= base_url('ad/'.$ad['slug']) ?>">
+                      <div class="title-cto"><?= substr($ad['title'],0,20) ?></div>
+                      <div class="title-lgo"><?=$ad['title']; ?></div>
+                    </a></li>
+                   
 
                     <li><small><?= date_time($ad['created_date']) ?></small><a href="<?= base_url('ad/'.$ad['slug']) ?>" class="pull-right"><small><?= get_currency_symbol($this->general_settings['currency']); ?></small><?= number_format($ad['price']) ?></a></li>
-                  <li><small><?=($ad['location']) ?></small></li>
+                
+                    <li><small class="title-cto"><?=substr($location_items,0,35);?></small></li>
+                  <li><small class="title-lgo"><?=$location_items;?></small></li>
+          
                    <ul class="gp_products_caption_rating mt-2">
 
                   <?php
@@ -591,6 +599,41 @@
   </div>  
 
 </section>
+
+<style type="text/css">
+  .carousel-indicators .active {
+  background-color: #00cc67;
+}
+.carousel-indicators li {
+    position: relative;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    width: 30px;
+    height: 3px;
+    margin-right: 3px;
+    margin-left: 3px;
+    text-indent: -999px;
+    cursor: pointer;
+    background-color: rgba(40, 167, 69, 0.58);
+}
+
+
+
+.gp_products_carousel_pp_control_left, .gp_products_carousel_pp_control_right  {
+    top: 45%;
+    z-index: 2;
+    width: 30px;
+    height: 65px;
+    border: none;
+    text-shadow: none;
+    text-align: center;
+    color: #ffffff;
+    background: #00cc67;
+    box-shadow: none;
+   
+}
+
+</style>
 
 <!-- End item detail Area -->
 

@@ -117,7 +117,8 @@
               $featured = get_featured_label($ad['is_featured']);
             
               
-              $cadena = $ad['title'];
+             $location_items=locationItem($ad['state'],$ad['city']);
+
 
 
           ?>
@@ -153,12 +154,13 @@
                 <ul class="gp_products_caption_name">
 
                   <li ><a href="<?= base_url('ad/'.$ad['slug']) ?>">
-                   <div class="title-cto"><?=truncate_title($ad['title'],20);?></div> 
-                    <div class="title-lgo"><?=$ad['title'];?></div> 
+                   <div class="title-cto"><?=substr($ad['title'],0,23);?></div> 
+                    <div class="title-lgo" ><?=$ad['title'];?></div> 
                     </a></li>
                
                   <li><small><?= date_time($ad['created_date']) ?></small><a href="<?= base_url('ad/'.$ad['slug']) ?>" class="pull-right"><small><?= get_currency_symbol($this->general_settings['currency']); ?></small><?= number_format($ad['price']) ?></a></li>
-                  <li><small class="location-view"><?=($ad['location']) ?></small></li>
+                  <li><small class="title-cto"><?=substr($location_items,0,35);?></small></li>
+                  <li><small class="title-lgo"><?=$location_items;?></small></li>
           
                
                 </ul>

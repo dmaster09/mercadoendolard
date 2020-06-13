@@ -80,7 +80,14 @@
       ?>
 
       <input type="hidden" class="category_filter_pro" value="<?=$category;?>">
-      <input type="hidden" name="q" value="<?=(isset($_GET['q'])) ? $_GET['q'] : '';?>">
+      <?php $qv=''; 
+      if(isset($_GET['title'])){
+         $qv=$_GET['title'];
+      }else{
+        $qv=isset($_GET['q']) ? $_GET['q'] : '';
+      }
+      ?>
+      <input type="hidden" name="q" value="<?=$qv;?>">
     </div>
   </div>
 

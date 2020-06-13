@@ -82,11 +82,14 @@
       </div>
     </div>
     <div class="row d-flex justify-content-center">
-      <div id="adv_gp_products_3_columns_carousel" class="carousel slide gp_products_carousel_wrapper swipe_x ps_easeOutCirc" data-ride="carousel" data-duration="2000" data-interval="5000" data-pause="hover" data-column="4" data-m576="1" data-m768="1" data-m992="<?= count($featured) ?>" data-m1200="<?= count($featured) ?>">
+      <div id="adv_gp_products_3_columns_carousel" class="carousel slide gp_products_carousel_wrapper  ps_easeOutCirc" data-ride="carousel" data-duration="2000" data-interval="5000" data-pause="hover" data-column="4" data-m576="1" data-m768="1" data-m992="<?= count($featured) ?>" data-m1200="<?= count($featured) ?>">
         <!--========= Wrapper for slides =========-->
         <div class="carousel-inner" role="listbox">
 
-          <?php $count = 1; foreach($featured as $fpost): ?>
+          <?php $count = 1; foreach($featured as $fpost): 
+              $location_items=locationItem($fpost['state'],$fpost['city']);
+
+          ?>
 
           <!--========= slide =========-->
           <div class="carousel-item <?= ($count == 1) ? 'active': ''?>">
@@ -103,13 +106,15 @@
                   <ul class="gp_products_caption_name">
                     <li><a href="<?= base_url('ad/'.$fpost['slug']) ?>">
                      
-                    <div class="title-cto"><?=truncate_title($fpost['title'],20);?></div> 
+                    <div class="title-cto"><?=substr($fpost['title'],0,27);?></div> 
                     <div class="title-lgo"><?=$fpost['title'];?></div> 
                     
                     </li>
                     <li><small><?= date_time($fpost['created_date']) ?></small><a href="<?= base_url('ad/'.$fpost['slug']) ?>" class="pull-right"><small><?= get_currency_symbol($this->general_settings['currency']); ?></small><?= number_format($fpost['price']) ?></a></li>
+                    <li><small class="title-cto"><?=substr($location_items,0,38);?></small></li>
+                    <li><small class="title-lgo"><?=$location_items;?></small></li>
                   
-                    <li><small class="location-view"><?=($fpost['location']) ?></small></li>
+                
 
                   </ul>
                   <li>
@@ -179,7 +184,9 @@
         </div>
       </div>
       <div class="row d-flex justify-content-center mb-30">
-        <?php foreach($ads as $post):  ?>
+        <?php foreach($ads as $post):  
+              $location_items=locationItem($post['state'],$post['city']);
+          ?>
         <div class="col-md-3 col-12 gp_products_item">
           <div class="gp_products_inner">
             <?php 
@@ -197,15 +204,16 @@
               <ul class="gp_products_caption_name">
                 <li><a href="<?= base_url('ad/'.$post['slug']) ?>">
                   
-                    <div class="title-cto"><?=truncate_title($post['title'],20);?></div> 
-                    <div class="title-lgo"><?=$post['title'];?></div> 
+                    <div class="title-cto"><?=substr($post['title'],0,27);?></div> 
+                    <div class="title-lgo"><?=$post['title'];?> </div> 
                     
 
                   </a>
 
                 </li>
                 <li><small><?= date_time($post['created_date']) ?></small><a href="<?= base_url('ad/'.$post['slug']) ?>" class="pull-right"><small><?= get_currency_symbol($this->general_settings['currency']) ?></small><?= number_format($post['price']) ?></a></li>
-                <li><small class="location-view"><?=($post['location']) ?></small></li>
+                  <li><small class="title-cto"><?=substr($location_items,0,38);?></small></li>
+                  <li><small class="title-lgo"><?=$location_items;?></small></li>
 
                
 

@@ -172,7 +172,8 @@
 		*/
 	   
 		function post_file_insert($location, $controlname, $size)
-		{			
+		{	$CI = & get_instance();
+            $CI->load->library('image_lib');
 			$return = array();
 
 			if(isset($_FILES[$controlname]) && $_FILES[$controlname]['name'] != NULL)
@@ -189,8 +190,43 @@
 
 				if($this->obj->upload->do_upload($controlname))
 				{
-					$return['msg'] = $this->obj->upload->data('file_name');
-					$return['status'] = 1;
+
+					$name=$this->obj->upload->data('file_name');//nombre de imagen
+					$path=$this->obj->upload->data('file_path');//ruta
+
+					$config2['image_library'] = 'gd2';
+                    $config2['source_image'] =  $path.$name; // le decimos donde esta la imagen que acabamos de subir
+                    $config2['new_image']=$path.'/thumbs'; // las nuevas imágenes se guardan en la carpeta "thumbs"
+                    $config2['create_thumb'] = FALSE;
+                    $config2['maintain_ratio'] = TRUE;
+                    $config2['quality']='60%';
+
+                     $config2['width'] = 640;
+                     $config2['height'] = 420;
+                     
+					//$this->obj->image_lib->library('image_lib', $config2);
+					$CI->image_lib->clear();
+					$CI->image_lib->initialize($config2);
+       
+                     if (!$CI->image_lib->resize())
+                    {
+                      $return['msg'] = $CI->image_lib->display_errors();
+					  $return['status'] = 0;
+                   }
+       
+                    if($CI->image_lib->resize()){
+					/*asigno imagen renderizada y elimino la original*/
+
+
+					$return['msg'] =  'thumbs/'.$this->obj->upload->data('file_name');
+				    $return['status'] = 1;
+				    unlink($config2['source_image']);
+
+				    }else{
+				    $return['msg'] = $this->obj->upload->data('file_name');
+				    $return['status'] = 1;
+				    }
+
 				}
 				else
 				{
