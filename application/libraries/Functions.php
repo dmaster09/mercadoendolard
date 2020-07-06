@@ -188,22 +188,25 @@
 				$config['min_height'] = '220';
 				$this->obj->load->library('upload',$config);
 
+    
+
 				if($this->obj->upload->do_upload($controlname))
 				{
 
 					$name=$this->obj->upload->data('file_name');//nombre de imagen
 					$path=$this->obj->upload->data('file_path');//ruta
 
+
 					$config2['image_library'] = 'gd2';
                     $config2['source_image'] =  $path.$name; // le decimos donde esta la imagen que acabamos de subir
                     $config2['new_image']=$path.'/thumbs'; // las nuevas imágenes se guardan en la carpeta "thumbs"
                     $config2['create_thumb'] = FALSE;
                     $config2['maintain_ratio'] = TRUE;
-                    $config2['quality']='60%';
-
-                     $config2['width'] = 640;
-                     $config2['height'] = 420;
+                    $config2['quality']='60%';             
+                    
                      
+                     $config2['width'] = '800';
+                     $config2['height'] =  '600';
 					//$this->obj->image_lib->library('image_lib', $config2);
 					$CI->image_lib->clear();
 					$CI->image_lib->initialize($config2);
@@ -216,11 +219,66 @@
        
                     if($CI->image_lib->resize()){
 					/*asigno imagen renderizada y elimino la original*/
+				   
+					$CI->image_lib->clear(); 
+					
+					$origen=$path.'thumbs/'.$this->obj->upload->data('file_name');
+					$origen2=$_FILES[$controlname]['tmp_name'];//leer metadatos;
+					$imagen_principal=$this->obj->upload->data('file_name');
 
-
-					$return['msg'] =  'thumbs/'.$this->obj->upload->data('file_name');
+					$return['msg'] =  'thumbs/'.$this->obj->upload->data('file_name');					
 				    $return['status'] = 1;
-				    unlink($config2['source_image']);
+				    // list($ancho, $alto) = getimagesize($origen);
+				    // echo $width."-".$height;
+				    // exit;
+				    $exif = exif_read_data($origen2);
+
+				    if(!empty($exif['Orientation'])) {
+                    $config2=array();
+                    $config2['image_library']   = 'gd2';
+                    $config2["create_thumb"] = FALSE; 
+				    $config2["source_image"] =$origen;
+
+                    
+                    switch($exif['Orientation']) {
+                      case 1: // fila 0 = arriba, columna 0 = lado izquierdo
+                        $config2["rotation_angle"] = "0";
+                      break;
+                      case 2: // fila 0 = arriba, columna 0 = lado derecho
+                        $config2["rotation_angle"] = "0";
+                      break;
+                      case 3: // fila 0 = abajo, columna 0 = lado derecho
+                        $config2["rotation_angle"] = "90";
+                      break;
+                      case 4: // fila 0 = abajo, columna 0 = lado izquierdo
+                        $config2["rotation_angle"] = "180";
+                       break;
+                       case 5: // fila 0 = lado izquierdo, columna 0 = arriba
+                        $config2["rotation_angle"] = "90";
+                       break;
+                       case 6: // fila 0 = lado derecho, columna 0 = arriba
+                         $config2["rotation_angle"] = "270";
+                       break;
+                       case 7: // fila 0 = lado derecho, columna 0 = abajo
+                        $config2["rotation_angle"] = "270";
+                       break;
+                       case 8: // fila 0 = lado izquierdo, columna 0 = abajo
+                        $config2["rotation_angle"] = "270";
+                       break;
+                       default:
+                        $config2["rotation_angle"] = "0";
+                        break;
+                    }
+                    
+                 
+                    $CI->image_lib->initialize($config2);
+					$CI->image_lib->rotate();
+				}
+				    
+
+
+				    unlink($imagen_principal);
+				    //eliminamos la imagen no renderizada
 
 				    }else{
 				    $return['msg'] = $this->obj->upload->data('file_name');

@@ -106,7 +106,7 @@
                   <ul class="gp_products_caption_name">
                     <li><a href="<?= base_url('ad/'.$fpost['slug']) ?>">
                      
-                    <div class="title-cto"><?=substr($fpost['title'],0,27);?></div> 
+                    <div class="title-cto"><?=$fpost['title'];?></div> 
                     <div class="title-lgo"><?=$fpost['title'];?></div> 
                     
                     </li>
@@ -204,7 +204,7 @@
               <ul class="gp_products_caption_name">
                 <li><a href="<?= base_url('ad/'.$post['slug']) ?>">
                   
-                    <div class="title-cto"><?=substr($post['title'],0,27);?></div> 
+                    <div class="title-cto"><?=$post['title'];?></div> 
                     <div class="title-lgo"><?=$post['title'];?> </div> 
                     
 

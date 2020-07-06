@@ -459,7 +459,7 @@
                   <ul class="gp_products_caption_name" >
 
                     <li><a href="<?= base_url('ad/'.$ad['slug']) ?>">
-                      <div class="title-cto"><?= substr($ad['title'],0,20) ?></div>
+                      <div class="title-cto"><?=$ad['title'];?></div>
                       <div class="title-lgo"><?=$ad['title']; ?></div>
                     </a></li>
                    
