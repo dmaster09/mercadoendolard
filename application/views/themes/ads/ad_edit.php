@@ -5,7 +5,7 @@
     <div class="row d-flex align-items-center justify-content-center">
       <div class="about-content col-lg-12">
         <h1 class="text-white">
-          Edita tu Anuncio
+          Edita tu Anuncios
         </h1> 
         <p class="text-white link-nav">
           <a href="<?= base_url('profile/ads') ?>">Anuncios </a> <span class="lnr lnr-arrow-right"></span> <a href=""> Editar</a>
@@ -295,13 +295,35 @@
 
     <div class="add_job_detail col-12">
       <h5>Paquete Según exposición *</h5>
+      <a  href="void:javascript(0)" class="btn btn-xs btn-success pull-right pack_return">Renovar / Cambiar</a>
       <br>
+      <br>
+       <input type="hidden" name="accion_pack" id="accion_pack" value="false">
+          <div class="alert alert-success alert-dismissable">
+            <!--     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button> -->
+                
+                    <i class="icon fa fa-info-circle"></i>
+                    Estimado Usuario Usted esta Suscrito al Paquete :
+                    <?php foreach($packages as $pack): 
+                      if($pack['id']==$post['package']){
+                        echo '<b>'.$pack['title'].'</b>';
+                      }
+                     
+                     endforeach; ?>
+                     que tiene Fecha de Expiración el dia : <b><?= date_time($post['expiry_date']); ?></b>
+                     para Renovar o Cambiar seleccione Renovar
+                
+            </div>
+        
+        </div>
+       <div class="m-b-15 class-package hidden">
+
       <?php foreach($packages as $pack): ?>
         <div class="row">
           <div class="col-md-6 col-sm-6">
             <div class="submit-field">
               <label class="form-label">
-                <input type="radio" class="form package-radio" name="package" value="<?= $pack['id'] ?>" data-price="<?= $pack['price'] ?>">
+                <input type="radio" class="form package-radio" name="package" value="<?= $pack['id'] ?>" data-price="<?= $pack['price'] ?>" <?=$pack['id']==$post['package']?"checked":"";?>>
                 <?= $pack['title'] ?>
               </label>
             </div>
@@ -321,13 +343,21 @@
             <h5>Metodo de Pago *</h5>
             <select class="form-control payment-method" name="payment_method" >
               <option value="">Seleccione una Opción</option>
-              <option value="2">Stripe</option>
+              <?php 
+                  if($this->general_settings['paypal_status'] == 1) 
+                  echo '<option value="1">Paypal</option>';
+                  if($this->general_settings['stripe_status'] == 1)
+                  echo '<option value="2">Stripe</option>';
+                ?>
             </select>
           </div>
         </div>
       </div>
       </div>
 
+         <?php 
+            if($this->general_settings['stripe_status'] == 1):
+          ?>
       <!-- stripe -->
       <div class="stripe hidden">
         <img src="<?= base_url('assets/img/stripe.png') ?>" width="200">
@@ -385,6 +415,20 @@
         </div>
       </div>
       <!-- /Stripe -->
+
+        <?php   
+            endif;
+            if($this->general_settings['paypal_status'] == 1):
+          ?>
+
+          <!-- Paypal -->
+          <div class="paypal hidden">
+            <img src="<?= base_url('assets/img/paypal.png') ?>" width="200">
+          </div>
+          <!-- /Paypal -->
+
+          <?php  endif;   ?>
+        
     </div>
   </div>     
 
@@ -422,6 +466,63 @@ function readURL(input,i) {
     reader.readAsDataURL(input.files[0]);
   }
 }
+
+var hoy             = new Date();
+var fechaFormulario = new Date("<?=$post['expiry_date'];?>");
+
+// Compara solo las fechas => no las horas!!
+hoy.setHours(0,0,0,0);
+
+if (hoy <= fechaFormulario) {
+  
+
+}
+else {
+ $('.pack_return').addClass('hidden');
+ $('.alert-success').addClass('hidden');
+ $('.class-package').removeClass('hidden');
+  $('#accion_pack').val("true");
+}
+
+$(document).on('click','.package-radio',function(){
+    price = $(this).data('price');
+    if (parseInt(price) > 0) {
+      $('.payment-method-wrapper').removeClass('hidden');
+    }
+    else{
+      $('.payment-method').val('');
+      $('.payment-method-wrapper').addClass('hidden');
+      $('.stripe').addClass('hidden');
+      $('.paypal').addClass('hidden');
+    }
+  });
+
+$(document).on('click','.pack_return',function(){
+  if($('#accion_pack').val()=="true"){
+    var pack="<?=$post['package'];?>";
+   $('#accion_pack').val("false");
+   $('.class-package').addClass('hidden');
+   $('.pack_return').text("Renovar / Cambiar");
+   $(".package-radio").each(function(){
+   //  alert($(this).val())
+    if($(this).val()==pack){
+    $(this).prop('checked', true);
+     }else{
+       $(this).prop('checked', true);
+     }
+   });
+  // $(".package-radio").val("<?=$post['package'];?>")
+
+   $(".payment-method").val("");
+   $('.payment-method-wrapper').addClass('hidden');
+
+  }else{
+    $('#accion_pack').val("true");
+    $('.class-package').removeClass('hidden');
+    $('.pack_return').text("Cancelar");
+
+  }
+});
 
 </script>
 <!-- GEO Location -->

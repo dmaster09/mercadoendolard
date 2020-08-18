@@ -7097,6 +7097,12 @@ input.price-range {
   white-space:nowrap;
   text-overflow: ellipsis;
 }
+.visible-xs{
+  display: none;
+}
+.visible-md{
+  display: block;
+}
 @media only screen and (max-width: 700px) {
 .title-lgo{
   display: block;
@@ -7105,12 +7111,22 @@ input.price-range {
 .title-cto{
   display: none;
 }
+.visible-xs{
+  display: block;
+}
+.visible-md{
+  display: none;
+}
 
 .gp_products_carousel_control_left,
 .gp_products_carousel_control_right{
  opacity: 0.5;
 }
 
+}
+
+.valora{
+  pointer-events:none;
 }
 
 /* License Terms */

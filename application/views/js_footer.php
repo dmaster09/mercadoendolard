@@ -306,12 +306,22 @@
     children.each(function() {
       if (parseInt($this.data('rating')) >= i) 
       {
+         selecto =parseInt($this.data('rating'));
         $(this).removeClass('fa-star-o').addClass('fa-star');
+        
+         
+         $(".f20").each(function(){         
+             if(parseInt($(this).data('rating'))<selecto){
+              $(this).removeClass('fa-star-o').addClass('fa-star');
+            }
+          });
+
       } else {
         $(this).removeClass('fa-star').addClass('fa-star-o');
       }
       i++;
     });
+   
     var data = 
     {
       user_id : user_id, 
@@ -348,20 +358,46 @@
         $('.pre-loader').addClass('hidden');
         $btn.prop('disabled',false);
         $btn.val($txt);
+         if(obj.status == 'paypal')
+        {
+          $(this).closest('form').removeClass('jsform');
+          $(this).closest('form').submit();
+        }
         if(obj.status == 'success')
         {
-          swal(obj.status+"!", obj.msg, obj.status);
+          if(obj.redirect2){
+
+           swal(obj.status+"!", obj.msg, obj.status).then(function() {
+                window.location.href=obj.redirect2;
+           });
+          }else{
+            swal(obj.status+"!", obj.msg, obj.status);  
+          
+          }
+
           if (obj.redirect){
+            //window.location.href=base_url+'profile/ads';
             window.location = obj.redirect; 
           }
           else{
-            location.reload();
+            if(!obj.redirect2){
+               location.reload();
+             }
           }
+        }else{
+        if(obj.status == 'paypal')
+        {
+          swal('Redireccionando','Espere, mientras se le redirige a PayPal','success');
+          $('.jsform').remove();
+          $('.pre-loader').removeClass('hidden');
+          $('.add_job_content').html(obj.msg);
+          $('form[name=paypal_auto_form]').submit();
         }
         else
         {
           swal(obj.status+"!", obj.msg, obj.status);
         }
+      }
       },
     });
   }); 

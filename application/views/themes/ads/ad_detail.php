@@ -202,8 +202,8 @@
 
                   $rating = get_post_rating_by_user($user_id,$ad_id);
 
-
-
+                 
+                
                   for ($i = 1; $i < 6; $i++):
 
 
@@ -216,7 +216,7 @@
 
                   ?>
 
-                <li><i class="fa fa-star f20" data-rating="<?= $i ?>" data-user="<?= $user_id ?>" data-post="<?= $ad_id ?>"></i></li>
+                <li class="valora"><i class="fa fa-star f20 " data-rating="<?= $i ?>" data-user="<?= $user_id ?>" data-post="<?= $ad_id ?>"></i></li>
 
                   <?php 
 
@@ -239,6 +239,7 @@
                   ?>
 
                   <input type="hidden" name="" class="rating-value" value="<?= $rating ?>">
+                
 
                </ul>
 
@@ -377,7 +378,12 @@
 
           <br>
 
-          <button hreftype="button" class="btn btn-primary btn-block btn-contact" data-contact="<?= $ad['contact'] ?>">Mostrar Número</button>
+          <button hreftype="button" class="btn btn-primary btn-block visible-md btn-contact" style="user-select: all" data-contact="<?= $ad['contact'] ?>">Mostrar Número</button>
+          <a href="tel:<?= $ad['contact'] ?>" class="btn btn-primary visible-xs btn-block btn-contact">
+            <i class="fa fa-phone" style="font-size: 1em;"></i> : <?= $ad['contact'] ?>
+           </a>
+
+
 
           <a href="<?= base_url('inbox/'.$ad['id'].'/'.$ad['slug']) ?>" class="btn btn-success btn-block">Enviar Mensaje</a>
 

@@ -8,6 +8,7 @@ class Ads extends Main_Controller {
 		$this->load->model('seller/ad_model','ad_model');
 		$this->load->model('common_model'); // load common model 
 		$this->load->library('mailer'); // load custom mailer library
+		$this->load->library('paypal_lib'); // load custom mailer library
 		$this->load->helper('email');
 	}
 
@@ -22,7 +23,7 @@ class Ads extends Main_Controller {
 		
 
 		if($this->input->post()){
-		    
+
 		    //  Set Custom Fields Validation Rules
 		    if(isset($_POST['field']) && count($_POST) > 0):
 				foreach ($_POST['field'] as $id) 
@@ -219,7 +220,21 @@ class Ads extends Main_Controller {
 				}
 			
 				// MAKE PAYMENT
-				if($payment_method == '6')
+				if($payment_method == '1')
+				{
+					// update pending payment status 
+					$ad_status = array('is_status' => 3);
+					$ad_status = $this->security->xss_clean($ad_status);
+					$this->ad_model->edit_ad($ad_status,$ad_id);
+
+					$pp_return = $this->pay_with_paypal($package_id,$ad_id,$payment_method);
+
+					$response =  array('status' => 'paypal', 'msg' => $pp_return);
+			        echo json_encode($response);
+
+			        exit();
+				}
+				if($payment_method == '2')
 				{
 					$payment_result = $this->pay_with_stripe($package_id,$ad_id,$payment_method);
 					$payment = $payment_result['status'];
@@ -231,8 +246,10 @@ class Ads extends Main_Controller {
 
 			    if($payment)
 			    {
+
+			    	
     				// Send Email
-    
+                     if(!$this->config->item('develop')){
     					$to = $this->session->userdata('email');
     
     					$mail_data = array(
@@ -241,7 +258,7 @@ class Ads extends Main_Controller {
     					);
     
     					$template = $this->mailer->mail_template($to,'ad-post',$mail_data);
-    
+                     }
     				// Ending Email
 
     				// User Notification
@@ -253,7 +270,7 @@ class Ads extends Main_Controller {
     
     				// End Notification
                     
-                    $response =  array('status' => 'success', 'msg' => 'Tu anuncio fue publicado');
+                    $response =  array('status' => 'success', 'msg' => 'Tu anuncio fue publicado','redirect2'=>base_url('profile/ads'));
 			        echo json_encode($response);
 			    }
 			    else
@@ -281,12 +298,14 @@ class Ads extends Main_Controller {
 	// Edit Ad
 	public function edit($ad_id=0)
 	{
+ 
+	
 		$data['countries'] = $this->common_model->get_countries_list();
 		$data['packages'] = $this->common_model->get_packages();
 		$user_id = $this->session->userdata('user_id');
 
 		if($this->input->post()){
-		    
+	
 		     //  Set Custom Fields Validation Rules
 		    if(isset($_POST['field']) && count($_POST) > 0):
 				foreach ($_POST['field'] as $id) 
@@ -318,8 +337,16 @@ class Ads extends Main_Controller {
 			$this->form_validation->set_rules('country', 'pais', 'trim|required');
 
 			$this->form_validation->set_rules('state', 'estado', 'trim|required');
+            if($this->input->post('accion_pack')=="true"){
+             if($this->input->post('package')!=5){
+             	$this->form_validation->set_rules('payment_method', 'medoto pago', 'trim|required');
+             }
+            }
 
 			$this->form_validation->set_rules('city', 'ciudad', 'trim|required');
+			// if($this->input->post('package')){
+			// 		$this->form_validation->set_rules('payment_method', 'medoto pago', 'trim|required');
+			// }
 
 			$this->form_validation->set_rules('address', 'direccion exacta', 'trim');
 
@@ -331,6 +358,9 @@ class Ads extends Main_Controller {
 			else
 			{
 				$slug = make_slug($this->input->post('title'));
+
+				$package_id = $this->input->post('package');
+				$payment_method = $this->input->post('payment_method');
 
 				$data = array(
 					'category' => $this->input->post('category'),
@@ -474,6 +504,37 @@ class Ads extends Main_Controller {
 					}
 				}
 
+  
+
+				// MAKE PAYMENT
+				if($payment_method == '1')
+				{
+					$pp_return = $this->pay_with_paypal($package_id,$ad_id,$payment_method);
+
+					$response =  array('status' => 'paypal', 'msg' => $pp_return);
+			        echo json_encode($response);
+			        exit();
+				}
+				if($payment_method == '2')
+				{
+					$payment_result = $this->pay_with_stripe($package_id,$ad_id,$payment_method);
+					$payment = $payment_result['status'];
+
+					if($payment){
+					$package_id = $this->input->post('package');
+					$ad_expiret = array('package'=>$package_id,'expiry_date' => create_package_expiry_date($package_id));
+					$ad_expiret = $this->security->xss_clean($ad_expiret);
+					$this->ad_model->edit_ad($ad_expiret,$ad_id);
+					}
+				}
+				else
+				{
+				    $payment = true;
+				}
+
+				if($payment)
+			    {
+
 				// User Notification
 					$notification = array(
 						'user_id' => $user_id,
@@ -483,8 +544,22 @@ class Ads extends Main_Controller {
 
 				// End Notification
 
-				$response =  array('status' => '', 'msg' => 'Tu anuncio fue actualizado');
+				$response =  array('status' => 'success', 'msg' => 'Tu anuncio fue actualizado','redirect2'=>base_url('profile/ads'));
 				echo json_encode($response);
+				// 
+				// //$this->session->set_flashdata('success','Tu anuncio fue actualizado');
+				// redirect('profile/ads');
+				
+				}else{
+					// update pending payment status 
+					$ad_status = array('is_status' => 3);
+					$ad_status = $this->security->xss_clean($ad_status);
+					$this->ad_model->edit_ad($ad_status,$ad_id);
+
+					$response =  array('status' => 'error', 'msg' => $payment_result['message']);
+			        echo json_encode($response);
+				}
+
 			}
 		}
 		else{
@@ -500,6 +575,8 @@ class Ads extends Main_Controller {
 
 			$data['title'] = 'Edit Ad';
 			$data['layout'] = 'themes/ads/ad_edit';
+			// print_r($data['post']);
+			// exit;
 			$this->load->view('themes/layout', $data);
 		}
 	}
@@ -685,6 +762,43 @@ class Ads extends Main_Controller {
                 $this->session->set_flashdata('errors', 'Invalid Token');
                 return false;
             }
+    }
+
+
+  /*
+		PAYPAL PAYMENT METHOD
+	*/
+    public function pay_with_paypal($package_id,$ad_id,$payment_method)
+    {
+        $user_id = $this->session->userdata('user_id');
+        
+        $package_detail = $this->ad_model->get_package_detail_by_id($package_id);
+        $total_price = number_format($package_detail['price'],2);
+
+        // Set variables for paypal form
+        $returnURL = base_url().'paypal/success';
+        $cancelURL = base_url().'paypal/cancel';
+        $notifyURL = base_url().'paypal/ipn';
+
+        
+        // Add fields to paypal form
+        $this->paypal_lib->add_field('csfr_token_name', $this->security->get_csrf_hash());
+        $this->paypal_lib->add_field('return', $returnURL);
+        $this->paypal_lib->add_field('cancel_return', $cancelURL);
+        $this->paypal_lib->add_field('notify_url', $notifyURL);
+        $this->paypal_lib->add_field('item_name', $package_detail['title']);
+        $this->paypal_lib->add_field('custom', $package_id);
+        $this->paypal_lib->add_field('item_number',  $ad_id);
+        $this->paypal_lib->add_field('amount',  $total_price);
+        $this->paypal_lib->add_field('payer_id',  $user_id);
+        $this->paypal_lib->add_field('rm',  2);
+        $this->paypal_lib->add_field('handling',  0);
+        
+        // Render paypal form
+        
+        return $this->paypal_lib->paypal_auto_form();
+        exit();
+		
     }
 
 	// Rating

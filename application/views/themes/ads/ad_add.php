@@ -286,12 +286,18 @@
             <h5>Metodo de Pago *</h5>
             <select class="form-control payment-method" name="payment_method" >
               <option value="">Seleccione una Opción</option>
-              <option value="2">Stripe</option>
+            <!--   <option value="2">Stripe</option> -->
+            <?php 
+                if($this->general_settings['paypal_status'] == 1) 
+                echo '<option value="1">Paypal</option>';
+                if($this->general_settings['stripe_status'] == 1)
+                echo '<option value="2">Stripe</option>';
+              ?>
             </select>
           </div>
         </div>
       </div>
-
+      
       <!-- stripe -->
       <div class="stripe hidden">
         <img src="<?= base_url('assets/img/stripe.png') ?>" width="200">
@@ -349,6 +355,12 @@
         </div>
       </div>
       <!-- /Stripe -->
+
+       <!-- Paypal -->
+      <div class="paypal hidden">
+        <img src="<?= base_url('assets/img/paypal.png') ?>" width="200">
+      </div>
+      <!-- /Paypal -->
     </div>
   </div>     
 
@@ -388,17 +400,31 @@
 
 
 <script>
-(function($) {
-  "use strict";
+// (function($) {
+//   "use strict";
 
-  $(document).on('click','.package-radio',function(){
+//   $(document).on('click','.package-radio',function(){
+//     price = $(this).data('price');
+//     alert(price)
+//     if (parseInt(price) > 0) 
+//       $('.payment-method-wrapper').removeClass('hidden');
+//     else
+//       $('.payment-method-wrapper').addClass('hidden');
+//   });
+// });
+// 
+$(document).on('click','.package-radio',function(){
     price = $(this).data('price');
-    if (parseInt(price) > 0) 
+    if (parseInt(price) > 0) {
       $('.payment-method-wrapper').removeClass('hidden');
-    else
+    }
+    else{
+      $('.payment-method').val('');
       $('.payment-method-wrapper').addClass('hidden');
+      $('.stripe').addClass('hidden');
+      $('.paypal').addClass('hidden');
+    }
   });
-});
 
   // GEO Location //
   

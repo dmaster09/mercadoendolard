@@ -503,5 +503,11 @@ $lang["instagram_url"]='Url de Instagram';
 $lang["pinterest_url"]='URL de Pinterest';
 $lang["linkedin_url"]='URL de Linkedin';
 
+ $lang["product_comments"]='Comentarios del producto';
+ $lang["payment_settings"]='Configuración de pago';
+ $lang["paypal"]='Paypal';
+ $lang["paypal_account"]='Cuenta de Paypal';
+ $lang["product_promoting_payment"]='Pago de promoción del producto';
+ $lang["product_promoting_payment_exp"]='Pago de promoción del producto';
 
 ?>
