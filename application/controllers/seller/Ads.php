@@ -262,6 +262,7 @@ class Ads extends Main_Controller {
 				else
 				{
 				    $payment = true;
+
 				}
 
 			    if($payment)
@@ -589,6 +590,31 @@ class Ads extends Main_Controller {
 				else
 				{
 				    $payment = true;
+
+				    $date_ads=$this->ad_model->get_ad_by_id($ad_id,$user_id);
+					//echo $date_ads['expiry_date'];
+
+					$fecha_actual = strtotime(date("Y-m-d H:i:00",time()));
+                    $fecha_entrada = strtotime($date_ads['expiry_date']);
+                    $package_id = $this->input->post('package');
+                  if($fecha_actual > $fecha_entrada){
+                  
+					 $ad_expiret = array('is_status' => 1,'package'=>$package_id,'expiry_date' => create_package_expiry_date($package_id));
+					 
+                  }else{
+                  	$f1=new DateTime(date("Y-m-d H:i:00",time()));
+                  	$f2=new DateTime($date_ads['expiry_date']);
+                    $dias_consider= $this->dias_pasados($f1,$f2);
+                    //calculamos dias de diferencia extre la fecha actual y fecha de expirar y esos dias se los sumamos a la nueva fecha de calculo para expirar
+                    $fecha_expirar=create_package_expiry_date($package_id); 
+                    //verificamos si aun tiene dias  de valides para considerarselo                 
+                    $fecha_calculada= date("Y-m-d 23:59:59",strtotime($fecha_expirar."".$dias_consider." days"));
+ 
+ 					$ad_expiret = array('is_status' => 1,'package'=>$package_id,'expiry_date' => $fecha_calculada);
+                   }
+					
+					$ad_expiret = $this->security->xss_clean($ad_expiret);
+					$this->ad_model->edit_ad($ad_expiret,$ad_id);
 				}
 
 				if($payment)
