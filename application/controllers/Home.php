@@ -7,6 +7,7 @@ class Home extends Main_Controller {
 	{
 		parent::__construct();
 		$this->load->model('home_model');
+		$this->load->model('ad_model'); // load job model
 		$this->load->model('common_model');
 	}
 
@@ -163,32 +164,46 @@ class Home extends Main_Controller {
 	***********************/
 	public function auto_post_expire_cj()
 	{
-		$this->load->model('admin/employer_model', 'employer_model');
-
-		$pending_jobs = $this->db->get_where('ci_ads',array('is_status !' => 2))->result_array();
-
+		/*$this->load->model('admin/employer_model', 'employer_model');*/
+        $array = array('expiry_date <' => date('Y-m-d H:i'), 'is_status =' => 1);
+		$pending_jobs = $this->db->get_where('ci_ads',$array)->result_array();
+		
+		//$pending_jobs= $this->db->get('ci_ads')->row_array();
+		
+  //      print_r($this->db->last_query()); 
+		// exit;
+		$cont=0;
 		foreach ($pending_jobs as $job) 
 		{
-			$created  = date('Y-m-d H:i',strtotime(' + 20 minutes',strtotime($job['created_date'])));
-			$now = date('Y-m-d H:i');
+   
+			$this->db->where('id',$job['id']);
+			$this->db->update('ci_ads',array('is_status' => 2));
+			$cont=$cont+1;
 
-			if ($now >= $created) 
-			{
-				$this->db->where('id',$job['id']);
-				$this->db->update('ci_ads',array('is_status' => 2));
+			
+			//echo "hi";
+			// $created  = date('Y-m-d H:i',strtotime(' + 20 minutes',strtotime($job['created_date'])));
+			// $now = date('Y-m-d H:i');
+
+			// if ($now >= $created) 
+			// {
+			// 	$this->db->where('id',$job['id']);
+			// 	$this->db->update('ci_ads',array('is_status' => 2));
 				
-				$emp_info = $this->employer_model->get_employer_by_id($job['employer_id']);
-				$email = $emp_info['email'];
-				$data['link'] = base_url('employers/auth/login');
-				$data['message'] = 'Felicitaciones, tu anuncio fue aprovado.';
-				$subject = 'Nota - Notificaion de Aprobación de anuncio';
+			// 	// $emp_info = $this->employer_model->get_employer_by_id($job['employer_id']);
+			// 	// $email = $emp_info['email'];
+			// 	// $data['link'] = base_url('employers/auth/login');
+			// 	// $data['message'] = 'Felicitaciones, tu anuncio fue aprovado.';
+			// 	// $subject = 'Nota - Notificaion de Aprobación de anuncio';
 
-				$mail_html = $this->load->view('admin/mails/general_notification',$data,true);
+			// 	// $mail_html = $this->load->view('admin/mails/general_notification',$data,true);
 
-				sendEmail($emp['email'],$subject,$mail_html);
+			// 	// sendEmail($emp['email'],$subject,$mail_html);
 
-			}
+			// }
 		}
+
+		echo "Saludos Mercadoendolard Tus anuncios Verificados con fechas expiradas son un total de:".$cont;
 	}
 	
 }// endClass
