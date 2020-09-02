@@ -63,9 +63,9 @@ class Paypal extends Main_Controller
 
 			   	$payment_id = $this->payment_model->insert_payment($payment_data);
 
-                $ad_expiret = array('package'=>$package_id,'expiry_date' => create_package_expiry_date($package_id));
-				$ad_expiret = $this->security->xss_clean($ad_expiret);
-				$this->ad_model->edit_ad($ad_expiret,$ad_id);
+    //             $ad_expiret = array('package'=>$package_id,'expiry_date' => create_package_expiry_date($package_id));
+				// $ad_expiret = $this->security->xss_clean($ad_expiret);
+				// $this->ad_model->edit_ad($ad_expiret,$ad_id);
 
 			    $ad = $this->common_model->get_ad_by_id($ad_id);
 			   	

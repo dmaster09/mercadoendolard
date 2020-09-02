@@ -63,7 +63,23 @@ class Ads extends Main_Controller {
 			$this->form_validation->set_rules('address', 'direccion exacta', 'trim');
 
 			$this->form_validation->set_rules('address-lang', 'direccion no encontrada', 'trim');
+            
+     
+            
+             if($this->input->post('package')!=5){
+             	$this->form_validation->set_rules('payment_method', 'medoto pago', 'trim|required');
+                if($this->input->post('payment_method')==2){
 
+                   $this->form_validation->set_rules('name', 'Nombre Tarjetahabiente', 'trim|required');
+                   $this->form_validation->set_rules('email', 'Correo Eletrónico', 'trim|required');
+                   $this->form_validation->set_rules('card-number', 'Número tarjeta', 'trim|required');
+                   $this->form_validation->set_rules('card-expiry-month', 'Mes Vencimiento', 'trim|required|numeric');
+                   $this->form_validation->set_rules('card-expiry-year', 'Año Vencimiento', 'trim|required|numeric');
+                   $this->form_validation->set_rules('card-cvc', 'cvc', 'trim|required|numeric');
+                
+
+                }
+             }
 
 			if ($this->form_validation->run() == FALSE) {
                 
@@ -223,11 +239,15 @@ class Ads extends Main_Controller {
 				if($payment_method == '1')
 				{
 					// update pending payment status 
-					$ad_status = array('is_status' => 3);
+					$ad_status = array('is_status' => 1,'package'=>$package_id,'expiry_date' => create_package_expiry_date($package_id));
 					$ad_status = $this->security->xss_clean($ad_status);
 					$this->ad_model->edit_ad($ad_status,$ad_id);
 
 					$pp_return = $this->pay_with_paypal($package_id,$ad_id,$payment_method);
+
+				 // $ad_expiret = array('package'=>$package_id,'expiry_date' => create_package_expiry_date($package_id));
+				 //   $ad_expiret = $this->security->xss_clean($ad_expiret);
+				 //   $this->ad_model->edit_ad($ad_expiret,$ad_id);
 
 					$response =  array('status' => 'paypal', 'msg' => $pp_return);
 			        echo json_encode($response);
@@ -338,10 +358,24 @@ class Ads extends Main_Controller {
 
 			$this->form_validation->set_rules('state', 'estado', 'trim|required');
             if($this->input->post('accion_pack')=="true"){
+            	$this->form_validation->set_rules('package', 'Paquete', 'trim|required');
+            
              if($this->input->post('package')!=5){
              	$this->form_validation->set_rules('payment_method', 'medoto pago', 'trim|required');
+                if($this->input->post('payment_method')==2){
+
+                   $this->form_validation->set_rules('name', 'Nombre Tarjetahabiente', 'trim|required');
+                   $this->form_validation->set_rules('email', 'Correo Eletrónico', 'trim|required');
+                   $this->form_validation->set_rules('card-number', 'Número tarjeta', 'trim|required');
+                   $this->form_validation->set_rules('card-expiry-month', 'Mes Vencimiento', 'trim|required|numeric');
+                   $this->form_validation->set_rules('card-expiry-year', 'Año Vencimiento', 'trim|required|numeric');
+                   $this->form_validation->set_rules('card-cvc', 'cvc', 'trim|required|numeric');
+                
+
+                }
              }
-            }
+         }
+
 
 			$this->form_validation->set_rules('city', 'ciudad', 'trim|required');
 			// if($this->input->post('package')){
@@ -510,7 +544,31 @@ class Ads extends Main_Controller {
 				if($payment_method == '1')
 				{
 					$pp_return = $this->pay_with_paypal($package_id,$ad_id,$payment_method);
+					$date_ads=$this->ad_model->get_ad_by_id($ad_id,$user_id);
+					//echo $date_ads['expiry_date'];
 
+					$fecha_actual = strtotime(date("Y-m-d H:i:00",time()));
+                    $fecha_entrada = strtotime($date_ads['expiry_date']);
+                    $package_id = $this->input->post('package');
+                  if($fecha_actual > $fecha_entrada){
+                  
+					 $ad_expiret = array('is_status' => 1,'package'=>$package_id,'expiry_date' => create_package_expiry_date($package_id));
+					 
+                  }else{
+                  	$f1=new DateTime(date("Y-m-d H:i:00",time()));
+                  	$f2=new DateTime($date_ads['expiry_date']);
+                    $dias_consider= $this->dias_pasados($f1,$f2);
+                    //calculamos dias de diferencia extre la fecha actual y fecha de expirar y esos dias se los sumamos a la nueva fecha de calculo para expirar
+                    $fecha_expirar=create_package_expiry_date($package_id); 
+                    //verificamos si aun tiene dias  de valides para considerarselo                 
+                    $fecha_calculada= date("Y-m-d 23:59:59",strtotime($fecha_expirar."".$dias_consider." days"));
+ 
+ 					$ad_expiret = array('is_status' => 1,'package'=>$package_id,'expiry_date' => $fecha_calculada);
+                   }
+					
+					$ad_expiret = $this->security->xss_clean($ad_expiret);
+					$this->ad_model->edit_ad($ad_expiret,$ad_id);
+                   
 					$response =  array('status' => 'paypal', 'msg' => $pp_return);
 			        echo json_encode($response);
 			        exit();
@@ -521,6 +579,7 @@ class Ads extends Main_Controller {
 					$payment = $payment_result['status'];
 
 					if($payment){
+				
 					$package_id = $this->input->post('package');
 					$ad_expiret = array('package'=>$package_id,'expiry_date' => create_package_expiry_date($package_id));
 					$ad_expiret = $this->security->xss_clean($ad_expiret);
@@ -850,5 +909,18 @@ class Ads extends Main_Controller {
 			}
 		}
 	}
+
+
+	public function dias_pasados($fecha_inicial,$fecha_final)
+{
+	// $f1=$fecha_inicial;
+	// $f2=$fecha_final;
+
+	// return $f1 .'-'.$f2;
+ //    $fecha1 = new DateTime('2009-10-11');
+ //    $fecha2 = new DateTime('2009-10-13');
+    $resultado = $fecha_inicial->diff($fecha_final);
+    return $resultado->format('%R%a');
+}
 
 }// endclass

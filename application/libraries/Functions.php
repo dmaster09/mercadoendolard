@@ -277,7 +277,7 @@
 				    
 
 
-				    unlink($config2['source_image']);
+				    unlink($path.$name);
 				    //eliminamos la imagen no renderizada
 
 				    }else{

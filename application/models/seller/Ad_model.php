@@ -185,7 +185,7 @@ class Ad_Model extends CI_Model{
 		public function update_paypal_ad_status($ad_id)
 	{
 		$this->db->where('id',$ad_id);
-		$this->db->update('ci_ads',array('is_status' => 0));
+		$this->db->update('ci_ads',array('is_status' => 1));
 		return true;
 	}
 

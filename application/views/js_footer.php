@@ -367,11 +367,11 @@
         {
           if(obj.redirect2){
 
-           swal(obj.status+"!", obj.msg, obj.status).then(function() {
+           swal("Exito!", obj.msg, obj.status).then(function() {
                 window.location.href=obj.redirect2;
            });
           }else{
-            swal(obj.status+"!", obj.msg, obj.status);  
+            swal("Exito!", obj.msg, obj.status);  
           
           }
 

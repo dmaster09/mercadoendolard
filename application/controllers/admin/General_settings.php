@@ -459,15 +459,33 @@ class General_settings extends MY_Controller {
 			}
 			else{
 
-				// STRIPE PAYMENT
-				$stripe_data = array(
-					'publishable_key' => $this->input->post('publishable_key'),
-					'secrate_key' => $this->input->post('secret_key'),
-					'stripe_status' => $this->input->post('stripe_status'),
+				// // STRIPE PAYMENT
+				// $stripe_data = array(
+				// 	'publishable_key' => $this->input->post('publishable_key'),
+				// 	'secrate_key' => $this->input->post('secret_key'),
+				// 	'stripe_status' => $this->input->post('stripe_status'),
+				// 	'updated_date' => date('Y-m-d H:i:s'),
+				// );
+				// $stripe_data = $this->security->xss_clean($stripe_data);
+				// $this->setting_model->update_stripe_settings($stripe_data);
+				// 
+				$data = array(
+				    'paypal_sandbox' => $this->input->post('paypal_sandbox'),
+				    'paypal_sandbox_url' => $this->input->post('paypal_sandbox_url'),
+				    'paypal_live_url' => $this->input->post('paypal_live_url'),
+				    'paypal_email' => $this->input->post('paypal_email'),
+					'paypal_client_id' => $this->input->post('client_id'),
+					'paypal_status' => $this->input->post('paypal_status'),
+					'publishable_key' => $this->input->post('publishable_key'),//stripe
+				 	'secrate_key' => $this->input->post('secret_key'),//stripe
+				    'stripe_status' => $this->input->post('stripe_status'),//stripe
 					'updated_date' => date('Y-m-d H:i:s'),
 				);
-				$stripe_data = $this->security->xss_clean($stripe_data);
-				$this->setting_model->update_stripe_settings($stripe_data);
+				$data = $this->security->xss_clean($data);
+				
+
+				$this->setting_model->update_general_setting($data);
+					 //$this->setting_model->update_general_setting($data);
 
 				$this->session->set_flashdata('success', 'Payment setting updated successfully');
 				redirect(base_url('admin/general_settings/payments/'),'refresh');
@@ -476,6 +494,7 @@ class General_settings extends MY_Controller {
 		else
 		{
 			$data['stripe'] = $this->setting_model->get_stripe_settings();
+			$data['paypal'] = $this->setting_model->get_paypal_settings();
 
 			$data['title'] = 'Payment Setting';
 

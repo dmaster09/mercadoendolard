@@ -346,8 +346,8 @@
               <?php 
                   if($this->general_settings['paypal_status'] == 1) 
                   echo '<option value="1">Paypal</option>';
-                  if($this->general_settings['stripe_status'] == 1)
-                  echo '<option value="2">Stripe</option>';
+                  // if($this->general_settings['stripe_status'] == 1)
+                  // echo '<option value="2">Stripe</option>';
                 ?>
             </select>
           </div>
@@ -364,7 +364,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
-              <label for="username">Nombre Completo (Igual al de la tarjeta)</label>
+              <label for="username">Nombre Completo (Igual al de la tarjeta) *</label>
               <input type="text" name="name" placeholder="Jason Doe"  class="form-control">
             </div>
           </div>
@@ -372,7 +372,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
-              <label for="email">Correo</label>
+              <label for="email">Correo *</label>
               <input type="email" name="email" id="email"  placeholder="test@example.com"  class="form-control">
             </div>
           </div>
@@ -380,7 +380,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
-              <label for="cardNumber">Numero de Tarjeta</label>
+              <label for="cardNumber">Numero de Tarjeta *</label>
               <div class="input-group">
                 <input type="text" name="card-number" id="card-number" autocomplete="off" placeholder="Your card number" class="form-control" >
                 <div class="input-group-append">
@@ -397,7 +397,7 @@
         <div class="row">
           <div class="col-sm-3">
             <div class="form-group">
-              <label><span class="hidden-xs">Expiratición</span></label>
+              <label><span class="hidden-xs">Expiratición *</span></label>
               <div class="input-group">
                 <input type="number" placeholder="MM" maxlength="2" name="card-expiry-month" id="card-expiry-month" class="form-control" >
                 <input type="number" placeholder="YY" maxlength="4" name="card-expiry-year" id="card-expiry-year" class="form-control" >
@@ -406,7 +406,7 @@
           </div>
           <div class="col-sm-3">
             <div class="form-group mb-4">
-              <label data-toggle="tooltip" title="Three-digits code on the back of your card">CVV
+              <label data-toggle="tooltip" title="3 digitos al reverso de su tarjeta">CVV *
                 <i class="fa fa-question-circle"></i>
               </label>
               <input type="text" name="card-cvc" id="card-cvc" placeholder="CVV"  class="form-control">
@@ -506,9 +506,9 @@ $(document).on('click','.pack_return',function(){
    $(".package-radio").each(function(){
    //  alert($(this).val())
     if($(this).val()==pack){
-    $(this).prop('checked', true);
+    $(this).prop('checked', false);
      }else{
-       $(this).prop('checked', true);
+       $(this).prop('checked', false);
      }
    });
   // $(".package-radio").val("<?=$post['package'];?>")
@@ -520,6 +520,15 @@ $(document).on('click','.pack_return',function(){
     $('#accion_pack').val("true");
     $('.class-package').removeClass('hidden');
     $('.pack_return').text("Cancelar");
+
+    $(".package-radio").each(function(){
+   //  alert($(this).val())
+    if($(this).val()==pack){
+    $(this).prop('checked', false);
+     }else{
+       $(this).prop('checked', false);
+     }
+   });
 
   }
 });

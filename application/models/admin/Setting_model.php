@@ -164,6 +164,21 @@ class Setting_model extends CI_Model
 		return $this->db->get('ci_general_settings')->row_array();
 	}
 
+	// Get Stripe Setting
+	public function get_paypal_settings()
+	{
+		$this->db->select('paypal_sandbox,
+			paypal_sandbox_url,
+			paypal_live_url,
+			paypal_email,
+			paypal_client_id,
+			paypal_secrate_key,
+			paypal_status');
+		
+		$this->db->where('id',1);
+		return $this->db->get('ci_general_settings')->row_array();
+	}
+
 
 	// ----------------------------------------------------
 	// Update Stripe Settings
